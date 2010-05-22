@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="btn_main_preferences_text">Set Up</string>
+    
+    <string name="app_name">Protect Me</string>
+<string name="btn_start_main_zones">Watch Over Me Based On Pre-Set Zones (Only Activated when you Enter a Zone)</string>
+<string name="btn_start_main_continuos">Watch Over Me Continuosly (Always On Regardless of Pre-Set Zones)</string>
+<string name="btn_stop_services">Stop Protect Me</string>
+<string name="btn_stop_service">Stop Protect Me</string>
+<string name="local_service_started">Protect Me Service Started</string>
+<string name="local_service_stopped">Protect Me Service Stopped</string>
+<string name="local_service_label">Protect Me Service Running</string>
+<string name="title_intent_preference">Get Contact</string>
+<string name="summary_intent_preference">Choose a contact to call </string>
+<string name="tv_alert">ALERT!!!</string>
+<string name="Button01">Return To Caller</string>
+<string name="hello">Speech Recognizer</string>
+<string name="TextView01">Protect Me Service is On</string>
+<string name="btn_dismiss">OK</string>
+<string name="btn_about">About</string>
+</resources>

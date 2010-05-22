@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:orientation="vertical" android:layout_width="fill_parent"
+	android:layout_height="fill_parent">
+
+	<ScrollView android:id="@+id/ScrollView01"
+		android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_gravity="center_vertical">
+
+
+		<LinearLayout android:id="@+id/LinearLayout01"
+			android:layout_width="fill_parent" android:layout_height="fill_parent"
+			android:isScrollContainer="true" android:orientation="vertical">
+			<ImageView android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/iv_title" android:src="@drawable/titles" android:layout_gravity="center_horizontal" android:paddingBottom="20px"></ImageView>
+			
+			
+			
+			
+
+
+
+
+		<TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:text="@string/TextView01" android:textColor="@color/solid_yellow"></TextView><ImageButton android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="center_horizontal" android:id="@+id/ibtn_start" android:src="@drawable/start"></ImageButton><ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:id="@+id/ibtn_stop" android:src="@drawable/stop"></ImageButton>
+<ImageButton android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal" android:id="@+id/ibtn_setup" android:src="@drawable/setup"></ImageButton>
+
+
+</LinearLayout>
+	</ScrollView>
+
+</LinearLayout>
+
+
