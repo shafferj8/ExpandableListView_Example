@@ -34,7 +34,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	private int mVoiceVol;
 	SharedPreferences prefs;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
-	String TAG = "ProtectMeAlertActivity";
+	private static final String TAG = "ProtectMeAlertActivity";
 	PowerManager.WakeLock wl;
 	Thread t, t1;
 	private boolean stop;
