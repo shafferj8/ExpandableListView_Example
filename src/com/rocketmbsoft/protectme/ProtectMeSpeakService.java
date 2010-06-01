@@ -1,5 +1,6 @@
 package com.rocketmbsoft.protectme;
 
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Service;
@@ -12,13 +13,54 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnInitListener {
 
 	private TextToSpeech mTts;
+	private static final boolean D = true;
+	private static final String TAG = "ProtectMeSpeakService";
+
+	private boolean offhook = false;
+	private boolean idle = false;
+
+
+	private PhoneStateListener mPhoneListener = new PhoneStateListener()
+	{
+		public void onCallStateChanged(int state, String incomingNumber)
+		{
+			switch (state)
+			{
+			case TelephonyManager.CALL_STATE_RINGING:
+				if (D) Log.d(TAG, "CALL_STATE_RINGING : "+incomingNumber);
+				break;
+			case TelephonyManager.CALL_STATE_OFFHOOK:
+				if (D) Log.d(TAG, "CALL_STATE_OFFHOOK : "+incomingNumber);
+				offhook = true;
+
+				if (offhook && idle) {
+					if (D) Log.d(TAG, "Call In Progess ... ");
+
+					speakPhrase();
+				}
+				break;
+			case TelephonyManager.CALL_STATE_IDLE:
+				if (D) Log.d(TAG, "CALL_STATE_IDLE : "+incomingNumber);
+				idle = true;
+
+				if (offhook && idle) {
+					if (D) Log.d(TAG, "Call Is Disconnected ...");
+				}
+				break;
+			default:
+				if (D) Log.d(TAG, "Unknown phone state=" + state);
+			}
+		}
+	};
 	private AudioManager mAudioManager;
-	
+
 	@Override
 	public void onCreate() {
 		try {
@@ -30,8 +72,24 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 			e.printStackTrace();
 			return;
 		}
+
+		TelephonyManager tm = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+		tm.listen(mPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
-	
+
+
+	@Override
+	public void onDestroy() {
+
+		if (D) Log.d(TAG, "onDestroy");
+
+		if (mTts != null) {
+			mTts.shutdown();
+			mTts = null;
+			stopSelf();
+		}
+	}
+
 
 	public void speakPhrase() {
 
@@ -57,38 +115,36 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 				lat =  (float)loc.getLatitude();
 				lon =  (float)loc.getLongitude();
 
-				phrase += "My coordinates are, latitude "+lat+", longitude "+lon;
+				phrase += ". My coordinates are, latitude "+lat+", longitude "+lon;
 			} catch (Exception e) {
-				Log.d("speakPhrase","Could not get coordinates : ");
+				Log.e("speakPhrase","Could not get coordinates : ");
 				e.printStackTrace();
 			}
 		}
 
 		mAudioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
-		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+		mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0);
+
+		HashMap<String, String> ttsParams = new HashMap<String, String>();
+		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+				String.valueOf(AudioManager.STREAM_VOICE_CALL));
 
 		for (int i = 0; i < 3; i++) {
 			mTts.speak(phrase,
 					TextToSpeech.QUEUE_ADD, 
-					null);
+					ttsParams);
 		}
-		
+
 		mTts.shutdown();
 		mTts = null;
 		stopSelf();
 	}
-	
+
+
+
 	@Override
 	public void onInit(int status) {
-
-		try {
-			Thread.sleep(4000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		speakPhrase();
+		if (D) Log.d(TAG, "onInit");
 	}
 
 	@Override

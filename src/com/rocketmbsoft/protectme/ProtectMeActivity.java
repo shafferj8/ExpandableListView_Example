@@ -41,6 +41,9 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	boolean serviceIsRunning = false;
 	private static final int REQUEST_CODE_PREFERENCES = 0;
 	private ActivityManager mActivityManager;
+	
+	private static final boolean D = false;
+	private static final String TAG = "ProtectMeActivity";
 
 	/** Called when the activity is first created. */
 	@Override
@@ -48,7 +51,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-		Log.d("ProtectMeActivity::onCreate","Entered");
+		if (D) Log.d(TAG, "onCreate Entered");
 
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		
@@ -86,9 +89,6 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 			public void onClick(View v)
 			{
 
-				// TODO: Make sure the contact preference is set by the user 
-				// and that the challenge phtase is set. If either of these are
-				// not set, tell the user to set them and not start the service.
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 				
 				if (prefs.getString("contact_phone", "").equals("")) {
@@ -111,7 +111,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 				// we want it running in our own process and don't want other
 				// applications to replace it.
 				startService(new Intent(ProtectMeActivity.this,
-						ProtectMeService.class));
+						ProtectMeShakeService.class));
 
 				checkServices();
 			}
@@ -125,7 +125,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 				// service will not actually stop at this point if there are
 				// still bound clients.
 				stopService(new Intent(ProtectMeActivity.this,
-						ProtectMeService.class));
+						ProtectMeShakeService.class));
 
 				checkServices();
 			}
@@ -148,7 +148,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 		for (int i = 0; i < runningServices.size(); i++) {
 			RunningServiceInfo ri = runningServices.get(i);
 
-			if (ri.service.getClassName().equals(ProtectMeService.class.getName())) {
+			if (ri.service.getClassName().equals(ProtectMeShakeService.class.getName())) {
 				serviceIsRunning = true;
 				break;
 			}
@@ -187,26 +187,26 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	}
 
 	public void onResmue() {
-		Log.d("onResmue","******** Calling onStart");
+		if (D) Log.d("onResmue","******** Calling onStart");
 		super.onResume();
 		checkServices();
 	}
 
 	public void onRestart() {
-		Log.d("onRestart","******** Calling onStart");
+		if (D) Log.d("onRestart","******** Calling onStart");
 		super.onRestart();
 		checkServices();
 	}
 
 
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		Log.d("onRestoreInstanceState","******** Calling onStart");
+		if (D) Log.d("onRestoreInstanceState","******** Calling onStart");
 		super.onRestoreInstanceState(savedInstanceState);
 		checkServices();
 	}
 
 	public void onStart() {
-		Log.d("ProtectMeActivity::onStart","Entered");
+		if (D) Log.d("ProtectMeActivity::onStart","Entered");
 		super.onStart();
 		// checkServices();
 	}
@@ -232,7 +232,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	}
 	
 	public void onDestroy() {
-		Log.d("ProtectMeActivity::onDestroy","Entered");
+		if (D) Log.d("ProtectMeActivity::onDestroy","Entered");
 		super.onDestroy();
 		
 		btnMainContinuous = null;

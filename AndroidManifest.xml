@@ -19,13 +19,16 @@
 		</activity>
 
 		<activity android:name="ProtectMePreferences"></activity>
-		<service android:name="ProtectMeService"></service>
+		<service android:name="ProtectMeOrientationService"></service>
 		<activity android:name="ProtectMeAlertActivity" android:screenOrientation="portrait"></activity>
 		
 	<activity android:name="ProtectMeSumActivity"></activity>
 <service android:name="ProtectMeSpeakService"></service>
+<service android:label="ProtectMeShakeService" android:name="ProtectMeShakeService"></service>
 </application>
 	<uses-sdk android:minSdkVersion="4" />
 
 
+
+<uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
 </manifest> 

@@ -7,8 +7,8 @@
 <string name="btn_start_main_continuos">Watch Over Me Continuosly (Always On Regardless of Pre-Set Zones)</string>
 <string name="btn_stop_services">Stop Protect Me</string>
 <string name="btn_stop_service">Stop Protect Me</string>
-<string name="local_service_started">Protect Me Service Started</string>
-<string name="local_service_stopped">Protect Me Service Stopped</string>
+<string name="local_orientation_service_started">Protect Me Orientation Service Started</string><string name="local_shake_service_started">Protect Me Shake Service Started</string>
+<string name="local_shake_service_stopped">Protect Me Shake Service Stopped</string><string name="local_orientation_service_stopped">Protect Me Orientation Service Stopped</string>
 <string name="local_service_label">Protect Me Service Running</string>
 <string name="title_intent_preference">Get Contact</string>
 <string name="summary_intent_preference">Choose a contact to call </string>

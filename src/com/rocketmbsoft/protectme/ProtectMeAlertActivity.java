@@ -34,7 +34,8 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	private int mVoiceVol;
 	SharedPreferences prefs;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
-	String TAG = "ProtectMeAlertActivity";
+	private static final String TAG = "ProtectMeAlertActivity";
+	private static final boolean D = false;
 	PowerManager.WakeLock wl;
 	Thread t, t1;
 	private boolean stop;
@@ -43,7 +44,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("ProtectMeAlertActivity::onCreate","Entered");
+		if (D) Log.d(TAG,"onCreate  Entered");
 
 		setContentView(R.layout.alert);
 
@@ -90,8 +91,8 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 		try {
 			milliseconds_to_wait_for_response = (1000 * Integer.parseInt(prefs.getString("seconds_to_wait_for_response", "20")));
 		} catch (Exception e) {
-			Log.d("ProtectMeAlertActivity::onCreate","Exception : "+e.getMessage());
-			Log.d("ProtectMeAlertActivity::onCreate","Exception receiving preference, setting :milliseconds_to_wait_for_response, setting to 20");
+			Log.e("ProtectMeAlertActivity::onCreate","Exception : "+e.getMessage());
+			Log.e("ProtectMeAlertActivity::onCreate","Exception receiving preference, setting :milliseconds_to_wait_for_response, setting to 20");
 			milliseconds_to_wait_for_response = 20000;
 		}
 		
@@ -222,7 +223,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 			// Start the Phone activity
 			startActivity(intent);
 
-			setMaxVolume();
+			// setMaxVolume();
 
 		} catch (Exception e) {
 			Log.e("SampleApp", "Failed to invoke call", e);
@@ -231,7 +232,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		Log.d("ProtectMeAlertActivity:onActivityResult", "Called");
+		if (D) Log.d(TAG,"onActivityResult  Entered");
 
 		boolean found = false;
 
@@ -245,16 +246,16 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 
 			String phrase = prefs.getString("et_challenge_phrase", "");
 
-			Log.d("ProtectMeAlertActivity:onActivityResult", "Challenge Word is : "+phrase);
+			if (D) Log.d(TAG,"Challenge Word is : "+phrase);
 
 			for (int i = 0; i < matches.size(); i++) {
-				Log.d("ProtectMeAlertActivity:onActivityResult", "----Value returned from the Voice recognizer : "+matches.get(i));
+				if (D) Log.d(TAG,"onActivityResult ----Value returned from the Voice recognizer : "+matches.get(i));
 				if (matches.get(i).contains(phrase) || phrase.contains(matches.get(i))) {
 					// false alarm
 					resetVolume();
 
 					startService(new Intent(this,
-							ProtectMeService.class));
+							ProtectMeShakeService.class));
 
 					if (keyboardWasLocked) {
 						lock.reenableKeyguard();
@@ -276,7 +277,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@ Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.d(TAG,"onDestroy");
+		if (D) Log.d(TAG,"onDestroy");
 
 		if (wl != null && wl.isHeld()) {
 			wl.release();
@@ -323,7 +324,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@ Override
 	public void onStart() {
 		super.onStart();
-		Log.d(TAG,"onStart");
+		if (D) Log.d(TAG,"onStart");
 	}
 
 	@ Override
