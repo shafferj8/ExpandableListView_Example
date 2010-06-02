@@ -43,7 +43,6 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	private static final int REQUEST_CODE_PREFERENCES = 0;
 	private ActivityManager mActivityManager;
 	
-	private static final boolean D = false;
 	private static final String TAG = "ProtectMeActivity";
 
 	/** Called when the activity is first created. */
@@ -52,7 +51,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
-		if (D) Log.d(TAG, "onCreate Entered");
+		if (Config.D) Log.d(TAG, "onCreate Entered");
 
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 		
@@ -189,26 +188,26 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	}
 
 	public void onResmue() {
-		if (D) Log.d("onResmue","******** Calling onStart");
+		if (Config.D) Log.d("onResmue","******** Calling onStart");
 		super.onResume();
 		checkServices();
 	}
 
 	public void onRestart() {
-		if (D) Log.d("onRestart","******** Calling onStart");
+		if (Config.D) Log.d("onRestart","******** Calling onStart");
 		super.onRestart();
 		checkServices();
 	}
 
 
 	public void onRestoreInstanceState(Bundle savedInstanceState) {
-		if (D) Log.d("onRestoreInstanceState","******** Calling onStart");
+		if (Config.D) Log.d("onRestoreInstanceState","******** Calling onStart");
 		super.onRestoreInstanceState(savedInstanceState);
 		checkServices();
 	}
 
 	public void onStart() {
-		if (D) Log.d("ProtectMeActivity::onStart","Entered");
+		if (Config.D) Log.d("ProtectMeActivity::onStart","Entered");
 		super.onStart();
 		// checkServices();
 	}
@@ -234,7 +233,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	}
 	
 	public void onDestroy() {
-		if (D) Log.d("ProtectMeActivity::onDestroy","Entered");
+		if (Config.D) Log.d("ProtectMeActivity::onDestroy","Entered");
 		super.onDestroy();
 		
 		btnMainContinuous = null;

@@ -20,7 +20,6 @@ import android.util.Log;
 public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 
 	private TextToSpeech mTts;
-	private static final boolean D = true;
 	private static final String TAG = "ProtectMeSpeakService";
 
 	private boolean offhook = false;
@@ -35,28 +34,37 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 			switch (state)
 			{
 			case TelephonyManager.CALL_STATE_RINGING:
-				if (D) Log.d(TAG, "CALL_STATE_RINGING : "+incomingNumber);
+				if (Config.D) Log.d(TAG, "CALL_STATE_RINGING : "+incomingNumber);
 				break;
 			case TelephonyManager.CALL_STATE_OFFHOOK:
-				if (D) Log.d(TAG, "CALL_STATE_OFFHOOK : "+incomingNumber);
+				if (Config.D) Log.d(TAG, "CALL_STATE_OFFHOOK : "+incomingNumber);
 				offhook = true;
 
 				if (offhook && idle) {
-					if (D) Log.d(TAG, "Call In Progess ... ");
+					if (Config.D) Log.d(TAG, "Call In Progess ... ");
+					
+					tm.listen(mPhoneListener, PhoneStateListener.LISTEN_NONE);
 
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
 					speakPhrase();
 				}
 				break;
 			case TelephonyManager.CALL_STATE_IDLE:
-				if (D) Log.d(TAG, "CALL_STATE_IDLE : "+incomingNumber);
+				if (Config.D) Log.d(TAG, "CALL_STATE_IDLE : "+incomingNumber);
 				idle = true;
 
 				if (offhook && idle) {
-					if (D) Log.d(TAG, "Call Is Disconnected ...");
+					if (Config.D) Log.d(TAG, "Call Is Disconnected ...");
 				}
 				break;
 			default:
-				if (D) Log.d(TAG, "Unknown phone state=" + state);
+				if (Config.D) Log.d(TAG, "Unknown phone state=" + state);
 			}
 		}
 	};
@@ -85,7 +93,7 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (D) Log.d(TAG, "onDestroy");
+		if (Config.D) Log.d(TAG, "onDestroy");
 		
 		if (tm != null) {
 			tm.listen(mPhoneListener, PhoneStateListener.LISTEN_NONE);
@@ -151,7 +159,7 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 
 	@Override
 	public void onInit(int status) {
-		if (D) Log.d(TAG, "onInit");
+		if (Config.D) Log.d(TAG, "onInit");
 		
 		mTts.setOnUtteranceCompletedListener(this);
 		
@@ -169,10 +177,10 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 
 	@Override
 	public void onUtteranceCompleted(String utteranceId) {
-		if (D) Log.d(TAG, "onUtteranceCompleted : "+utteranceId);
+		if (Config.D) Log.d(TAG, "onUtteranceCompleted : "+utteranceId);
 		
 		if (utteranceId.equals(TAG+2)) {
-			if (D) Log.d(TAG, "onUtteranceCompleted got last utterance, shutting down");
+			if (Config.D) Log.d(TAG, "onUtteranceCompleted got last utterance, shutting down");
 			
 			mTts.shutdown();
 			mTts = null;

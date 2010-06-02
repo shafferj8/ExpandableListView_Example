@@ -35,7 +35,6 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 
 
 	private static final int PICK_CONTACT = 54365;
-	private static final boolean D = false;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +43,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		// Load the XML preferences file
 		addPreferencesFromResource(R.xml.preferences);
 
-		if (D) Log.d("AdvancedPreferences","Prefernce Count : "+getPreferenceScreen().getPreferenceCount());
+		if (Config.D) Log.d("AdvancedPreferences","Prefernce Count : "+getPreferenceScreen().getPreferenceCount());
 
 		getPreferenceManager().findPreference("str_contact").setOnPreferenceClickListener(this);
 
@@ -81,7 +80,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		                new String[]{Contacts.People.DISPLAY_NAME, Contacts.Phones.NUMBER}, null, null, null);
 				
 				for (int i = 0; i < c.getColumnCount(); i++) {
-					if (D) Log.d("Advanced Preferences","Column Name : *"+c.getColumnName(i)+"*");
+					if (Config.D) Log.d("Advanced Preferences","Column Name : *"+c.getColumnName(i)+"*");
 				}
 				
 				if (c.moveToFirst()) {
@@ -90,8 +89,8 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 					String phone = c.getString(1);
 					//String email = c.getString(c.getColumnIndexOrThrow(People.PRIMARY_EMAIL_ID));
 
-					if (D) Log.d("AdvancedPreferences","Selected Name : "+name);
-					if (D) Log.d("AdvancedPreferences","Selected Phone : "+phone);
+					if (Config.D) Log.d("AdvancedPreferences","Selected Name : "+name);
+					if (Config.D) Log.d("AdvancedPreferences","Selected Phone : "+phone);
 					//if (D) Log.d("AdvancedPreferences","Selected Email : "+email);
 
 					SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
@@ -108,7 +107,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 	
-		if (D) Log.d("AdvancedPreferences","Trying to start intent");
+		if (Config.D) Log.d("AdvancedPreferences","Trying to start intent");
 
 		Intent intent = new Intent(
 				Intent.ACTION_PICK, 

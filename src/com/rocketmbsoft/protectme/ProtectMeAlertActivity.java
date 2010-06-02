@@ -36,7 +36,6 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	SharedPreferences prefs;
 	private static final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 	private static final String TAG = "ProtectMeAlertActivity";
-	private static final boolean D = false;
 	PowerManager.WakeLock wl;
 	Thread t, t1;
 	private boolean stop;
@@ -45,7 +44,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (D) Log.d(TAG,"onCreate  Entered");
+		if (Config.D) Log.d(TAG,"onCreate  Entered");
 
 		setContentView(R.layout.alert);
 
@@ -179,7 +178,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		if (D) Log.d(TAG,"onActivityResult  Entered");
+		if (Config.D) Log.d(TAG,"onActivityResult  Entered");
 
 		boolean found = false;
 
@@ -193,10 +192,10 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 
 			String phrase = prefs.getString("et_challenge_phrase", "");
 
-			if (D) Log.d(TAG,"Challenge Word is : "+phrase);
+			if (Config.D) Log.d(TAG,"Challenge Word is : "+phrase);
 
 			for (int i = 0; i < matches.size(); i++) {
-				if (D) Log.d(TAG,"onActivityResult ----Value returned from the Voice recognizer : "+matches.get(i));
+				if (Config.D) Log.d(TAG,"onActivityResult ----Value returned from the Voice recognizer : "+matches.get(i));
 				if (matches.get(i).contains(phrase) || phrase.contains(matches.get(i))) {
 					// false alarm
 					resetVolume();
@@ -224,7 +223,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@ Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (D) Log.d(TAG,"onDestroy");
+		if (Config.D) Log.d(TAG,"onDestroy");
 
 		if (wl != null && wl.isHeld()) {
 			wl.release();
@@ -271,7 +270,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@ Override
 	public void onStart() {
 		super.onStart();
-		if (D) Log.d(TAG,"onStart");
+		if (Config.D) Log.d(TAG,"onStart");
 	}
 
 	@ Override

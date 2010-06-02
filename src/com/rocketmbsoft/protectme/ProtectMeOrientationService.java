@@ -47,8 +47,6 @@ public class ProtectMeOrientationService extends Service  {
 	final Semaphore lock = new Semaphore(1);
 	int count = 0;
 	private static boolean startedAlert = false;
-	
-	private final static boolean D = false;
 
 
 
@@ -83,7 +81,7 @@ public class ProtectMeOrientationService extends Service  {
 	public void onCreate() {
 		super.onCreate();
 		
-		if (D) Log.d("ProtectMeShakeService::onCreate","Entered");
+		if (Config.D) Log.d("ProtectMeShakeService::onCreate","Entered");
 		
 
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
@@ -120,7 +118,7 @@ public class ProtectMeOrientationService extends Service  {
 	@Override
 	public void onDestroy() {
 		
-		if (D) Log.d("ProtectMeShakeService::onDestroy","Entered");
+		if (Config.D) Log.d("ProtectMeShakeService::onDestroy","Entered");
 		
 		super.onDestroy();
 		

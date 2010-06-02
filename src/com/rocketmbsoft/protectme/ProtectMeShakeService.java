@@ -51,8 +51,6 @@ public class ProtectMeShakeService extends Service  {
 	int count = 0;
 	private static boolean startedAlert = false;
 	private static MediaPlayer mMediaPlayer;
-	
-	private final static boolean D = false;
 
 
 
@@ -84,7 +82,7 @@ public class ProtectMeShakeService extends Service  {
 					
 					if (! startedAlert) {
 
-						if (D) Log.d("SensorShake Algorithm", "**************Sensor value : "+totalForce+ ", Force Threshold : "+forceThreshHold);
+						if (Config.D) Log.d("SensorShake Algorithm", "**************Sensor value : "+totalForce+ ", Force Threshold : "+forceThreshHold);
 
 						mSensorManager.unregisterListener(this);
 
@@ -127,7 +125,7 @@ public class ProtectMeShakeService extends Service  {
 	public void onCreate() {
 		super.onCreate();
 		
-		if (D) Log.d("ProtectMeShakeService::onCreate","Entered");
+		if (Config.D) Log.d("ProtectMeShakeService::onCreate","Entered");
 		
 		mMediaPlayer = MediaPlayer.create(this, R.raw.beep);
 		mMediaPlayer.setLooping(false);
@@ -207,7 +205,7 @@ public class ProtectMeShakeService extends Service  {
 	@Override
 	public void onDestroy() {
 		
-		if (D) Log.d("ProtectMeShakeService::onDestroy","Entered");
+		if (Config.D) Log.d("ProtectMeShakeService::onDestroy","Entered");
 		
 		super.onDestroy();
 		
