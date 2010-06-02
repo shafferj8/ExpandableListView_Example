@@ -38,7 +38,8 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	private TextView tvStatus;
 	AlertDialog.Builder builder;
 	AlertDialog alert;
-	boolean serviceIsRunning = false;
+	boolean shakeServiceIsRunning = false;
+	boolean orientationServiceIsRunning = false;
 	private static final int REQUEST_CODE_PREFERENCES = 0;
 	private ActivityManager mActivityManager;
 	
@@ -141,20 +142,21 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 
 	void checkServices() {
 
-		serviceIsRunning = false;
+		shakeServiceIsRunning = false;
 
 		List<RunningServiceInfo> runningServices = mActivityManager.getRunningServices(100);
 
 		for (int i = 0; i < runningServices.size(); i++) {
 			RunningServiceInfo ri = runningServices.get(i);
 
-			if (ri.service.getClassName().equals(ProtectMeShakeService.class.getName())) {
-				serviceIsRunning = true;
+			if (ri.service.getClassName().equals(ProtectMeShakeService.class.getName()) ||
+					ri.service.getClassName().equals(ProtectMeOrientationService.class.getName())) {
+				shakeServiceIsRunning = true;
 				break;
 			}
 		}
 
-		if (serviceIsRunning) {
+		if (shakeServiceIsRunning) {
 			btnMainContinuous.setEnabled(false);
 			btnMainContinuous.setImageBitmap(startDisabledBitmap);
 

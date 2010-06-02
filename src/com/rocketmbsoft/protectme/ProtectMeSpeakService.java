@@ -64,6 +64,8 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 
 	@Override
 	public void onCreate() {
+		super.onCreate();
+		
 		try {
 			mTts = new TextToSpeech(this,
 					this  // TextToSpeech.OnInitListener
@@ -82,7 +84,7 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 
 	@Override
 	public void onDestroy() {
-
+		super.onDestroy();
 		if (D) Log.d(TAG, "onDestroy");
 		
 		if (tm != null) {
