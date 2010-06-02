@@ -17,7 +17,7 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnInitListener {
+public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 
 	private TextToSpeech mTts;
 	private static final boolean D = true;
@@ -26,6 +26,7 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 	private boolean offhook = false;
 	private boolean idle = false;
 
+	private TelephonyManager tm = null;
 
 	private PhoneStateListener mPhoneListener = new PhoneStateListener()
 	{
@@ -73,20 +74,24 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 			return;
 		}
 
-		TelephonyManager tm = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
-		tm.listen(mPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+		tm = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
 	}
+	
+
 
 
 	@Override
 	public void onDestroy() {
 
 		if (D) Log.d(TAG, "onDestroy");
+		
+		if (tm != null) {
+			tm.listen(mPhoneListener, PhoneStateListener.LISTEN_NONE);
+		}
 
 		if (mTts != null) {
 			mTts.shutdown();
 			mTts = null;
-			stopSelf();
 		}
 	}
 
@@ -125,19 +130,19 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 		mAudioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
 		mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0);
 
-		HashMap<String, String> ttsParams = new HashMap<String, String>();
-		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
-				String.valueOf(AudioManager.STREAM_VOICE_CALL));
 
 		for (int i = 0; i < 3; i++) {
+			HashMap<String, String> ttsParams = new HashMap<String, String>();
+			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+					String.valueOf(AudioManager.STREAM_VOICE_CALL));
+			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+					TAG+i);
+			
 			mTts.speak(phrase,
 					TextToSpeech.QUEUE_ADD, 
 					ttsParams);
 		}
 
-		mTts.shutdown();
-		mTts = null;
-		stopSelf();
 	}
 
 
@@ -145,12 +150,33 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 	@Override
 	public void onInit(int status) {
 		if (D) Log.d(TAG, "onInit");
+		
+		mTts.setOnUtteranceCompletedListener(this);
+		
+		tm.listen(mPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+
+	@Override
+	public void onUtteranceCompleted(String utteranceId) {
+		if (D) Log.d(TAG, "onUtteranceCompleted : "+utteranceId);
+		
+		if (utteranceId.equals(TAG+2)) {
+			if (D) Log.d(TAG, "onUtteranceCompleted got last utterance, shutting down");
+			
+			mTts.shutdown();
+			mTts = null;
+			stopSelf();
+		}
+		
 	}
 
 }
