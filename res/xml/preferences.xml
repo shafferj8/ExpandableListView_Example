@@ -32,7 +32,7 @@
 			android:title="Type in the Challenge Word" android:key="et_challenge_phrase"
 			android:summary="Secret word you will speak to let Protect Me service know you are OK."></EditTextPreference>
 	
-</PreferenceCategory><PreferenceCategory android:title="Please Select Your Activation Method"><CheckBoxPreference android:title="Orientation is Enabled" android:key="shake_check_box"></CheckBoxPreference><PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="orientation_preference_screen" android:title="Orientation Preferences"><PreferenceCategory android:selectable="true" android:key="orientation_preferences" android:title="Orientation Preferences">
+</PreferenceCategory><PreferenceCategory android:title="Please Select Your Activation Method"><CheckBoxPreference android:title="Orientation is Enabled" android:key="shake_check_box"></CheckBoxPreference><PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="orientation_preference_screen" android:title="Orientation Preferences"><PreferenceCategory android:selectable="true" android:key="orientation_preferences" android:title="Orientation Preferences" android:layout="@layout/orientation">
 	
 	
 		
