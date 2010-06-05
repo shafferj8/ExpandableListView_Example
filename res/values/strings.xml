@@ -19,4 +19,6 @@
 <string name="TextView01">Protect Me Service is On</string>
 <string name="btn_dismiss">OK</string>
 <string name="btn_about">About</string>
+<string name="shake_cb_enabled">Shake is Enabled</string>
+<string name="shake_cb_disabled">Orientation is Enabled</string>
 </resources>

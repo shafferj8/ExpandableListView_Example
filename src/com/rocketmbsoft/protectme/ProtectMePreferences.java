@@ -23,8 +23,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
+import android.preference.PreferenceScreen;
 import android.provider.Contacts;
 import android.util.Log;
 
@@ -35,6 +37,14 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 
 
 	private static final int PICK_CONTACT = 54365;
+	private static final boolean D = false;
+	
+	private static final String TAG = "ProtectMePreferences";
+	
+	private CheckBoxPreference shakeCb = null;
+	private PreferenceScreen orientationPs = null;
+	private PreferenceScreen shakePs = null;
+	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,10 +53,22 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		// Load the XML preferences file
 		addPreferencesFromResource(R.xml.preferences);
 
-		if (Config.D) Log.d("AdvancedPreferences","Prefernce Count : "+getPreferenceScreen().getPreferenceCount());
+		if (D) Log.d(TAG,"Prefernce Count : "+getPreferenceScreen().getPreferenceCount());
 
 		getPreferenceManager().findPreference("str_contact").setOnPreferenceClickListener(this);
+		
+		shakeCb = (CheckBoxPreference)getPreferenceScreen().findPreference(
+                "shake_check_box");
+		
+		orientationPs = (PreferenceScreen)getPreferenceScreen().findPreference(
+        	"orientation_preference_screen");
+		
+		shakePs = (PreferenceScreen)getPreferenceScreen().findPreference(
+    		"shake_preference_screen");
+		
+		shakeCb.setOnPreferenceClickListener(this);
 
+		updateTriggerMethod();
 	}
 
 	@Override
@@ -80,7 +102,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		                new String[]{Contacts.People.DISPLAY_NAME, Contacts.Phones.NUMBER}, null, null, null);
 				
 				for (int i = 0; i < c.getColumnCount(); i++) {
-					if (Config.D) Log.d("Advanced Preferences","Column Name : *"+c.getColumnName(i)+"*");
+					if (D) Log.d(TAG,"Column Name : *"+c.getColumnName(i)+"*");
 				}
 				
 				if (c.moveToFirst()) {
@@ -89,8 +111,8 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 					String phone = c.getString(1);
 					//String email = c.getString(c.getColumnIndexOrThrow(People.PRIMARY_EMAIL_ID));
 
-					if (Config.D) Log.d("AdvancedPreferences","Selected Name : "+name);
-					if (Config.D) Log.d("AdvancedPreferences","Selected Phone : "+phone);
+					if (D) Log.d(TAG,"Selected Name : "+name);
+					if (D) Log.d(TAG,"Selected Phone : "+phone);
 					//if (D) Log.d("AdvancedPreferences","Selected Email : "+email);
 
 					SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
@@ -107,7 +129,8 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 	@Override
 	public boolean onPreferenceClick(Preference preference) {
 	
-		if (Config.D) Log.d("AdvancedPreferences","Trying to start intent");
+		if (preference.getKey().equals("str_contact")) {
+		if (D) Log.d(TAG,"Trying to start intent");
 
 		Intent intent = new Intent(
 				Intent.ACTION_PICK, 
@@ -115,7 +138,24 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 
 		startActivityForResult(intent, PICK_CONTACT);
 
+		} else if (preference.getKey().equals("shake_check_box")) {
+			updateTriggerMethod();
+		}
+		
 		return false;
+	}
+	
+	public void updateTriggerMethod() {
+
+		if (shakeCb.isChecked()) {
+			shakeCb.setTitle(R.string.shake_cb_enabled);
+			shakePs.setEnabled(true);
+			orientationPs.setEnabled(false);
+		} else {
+			shakeCb.setTitle(R.string.shake_cb_disabled);
+			shakePs.setEnabled(false);
+			orientationPs.setEnabled(true);
+		}
 	}
 
 }
