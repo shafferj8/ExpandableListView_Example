@@ -28,15 +28,15 @@ public final class ProtectMeTimer {
 		hitCount++;
 
 		if (! timerIsScheduled ) {
-			Log.d("ProtectMeTimer::maxHits","Scheduling Timer");
+			if (Config.D) Log.d("ProtectMeTimer::maxHits","Scheduling Timer");
 			timerIsScheduled = true;
 			timer = new Timer();
 			task = new RemindTask();
 			timer.scheduleAtFixedRate(task, 0, 1000);
 		} 
 		
-		if(secondsWithHit >= ProtectMeService.shakes ) {
-			Log.d("ProtectMeTimer::maxHits","Max Hits Reached");
+		if(secondsWithHit >= ProtectMeShakeService.shakes ) {
+			if (Config.D) Log.d("ProtectMeTimer::maxHits","Max Hits Reached");
 			hitCount = 0;
 			secondsWithHit = 0;
 			timer.cancel();
@@ -53,11 +53,11 @@ public final class ProtectMeTimer {
 		public void run() {
 
 			if (hitCount > 0) {
-				Log.d("RemindTask","Had a hit within this second. Seconds with a hit : "+secondsWithHit);
+				if (Config.D) Log.d("RemindTask","Had a hit within this second. Seconds with a hit : "+secondsWithHit);
 				secondsWithHit++;
 				hitCount = 0;
 			} else {
-				Log.d("RemindTask","No hits within this second, Canceling timer : "+secondsWithHit);
+				if (Config.D) Log.d("RemindTask","No hits within this second, Canceling timer : "+secondsWithHit);
 				hitCount = 0;
 				secondsWithHit = 0;
 				timer.cancel();
@@ -71,7 +71,7 @@ public final class ProtectMeTimer {
 
 	public void onDestroy() {
 
-		Log.d("ProtectMeTimmer::onDestroy","called");
+		if (Config.D) Log.d("ProtectMeTimmer::onDestroy","called");
 		
 		started = false;
 
@@ -81,6 +81,6 @@ public final class ProtectMeTimer {
 			timer = null;
 		}
 		
-		Log.d("ProtectMeTimmer::onDestroy","finished");
+		if (Config.D) Log.d("ProtectMeTimmer::onDestroy","finished");
 	}
 }

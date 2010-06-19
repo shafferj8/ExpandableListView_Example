@@ -30,7 +30,7 @@ public class ProtectMeSumActivity extends Activity {
 			{
 				AlertDialog.Builder builder = new AlertDialog.Builder(ProtectMeSumActivity.this);
 		          builder.setTitle("Protect Me by\nRocket Mobile Soft");
-		          builder.setMessage("Version 1.4\nSupport at <a href=\"mailto:support@rocketmbsoft.com\"</a>");
+		          builder.setMessage("Version 2.0\nSupport at support@rocketmbsoft.com");
 		          builder.setNeutralButton("OK", null);
 		          builder.show(); 
 			}

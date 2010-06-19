@@ -1,5 +1,6 @@
 package com.rocketmbsoft.protectme;
 
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.Service;
@@ -12,15 +13,67 @@ import android.media.AudioManager;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
-public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnInitListener {
+public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 
 	private TextToSpeech mTts;
+	private static final String TAG = "ProtectMeSpeakService";
+
+	private boolean offhook = false;
+	private boolean idle = false;
+
+	private TelephonyManager tm = null;
+
+	private PhoneStateListener mPhoneListener = new PhoneStateListener()
+	{
+		public void onCallStateChanged(int state, String incomingNumber)
+		{
+			switch (state)
+			{
+			case TelephonyManager.CALL_STATE_RINGING:
+				if (Config.D) Log.d(TAG, "CALL_STATE_RINGING : "+incomingNumber);
+				break;
+			case TelephonyManager.CALL_STATE_OFFHOOK:
+				if (Config.D) Log.d(TAG, "CALL_STATE_OFFHOOK : "+incomingNumber);
+				offhook = true;
+
+				if (offhook && idle) {
+					if (Config.D) Log.d(TAG, "Call In Progess ... ");
+					
+					tm.listen(mPhoneListener, PhoneStateListener.LISTEN_NONE);
+
+					try {
+						Thread.sleep(7000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					speakPhrase();
+				}
+				break;
+			case TelephonyManager.CALL_STATE_IDLE:
+				if (Config.D) Log.d(TAG, "CALL_STATE_IDLE : "+incomingNumber);
+				idle = true;
+
+				if (offhook && idle) {
+					if (Config.D) Log.d(TAG, "Call Is Disconnected ...");
+				}
+				break;
+			default:
+				if (Config.D) Log.d(TAG, "Unknown phone state=" + state);
+			}
+		}
+	};
 	private AudioManager mAudioManager;
-	
+
 	@Override
 	public void onCreate() {
+		super.onCreate();
+		
 		try {
 			mTts = new TextToSpeech(this,
 					this  // TextToSpeech.OnInitListener
@@ -30,8 +83,28 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 			e.printStackTrace();
 			return;
 		}
+
+		tm = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
 	}
 	
+
+
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		if (Config.D) Log.d(TAG, "onDestroy");
+		
+		if (tm != null) {
+			tm.listen(mPhoneListener, PhoneStateListener.LISTEN_NONE);
+		}
+
+		if (mTts != null) {
+			mTts.shutdown();
+			mTts = null;
+		}
+	}
+
 
 	public void speakPhrase() {
 
@@ -57,44 +130,63 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 				lat =  (float)loc.getLatitude();
 				lon =  (float)loc.getLongitude();
 
-				phrase += "My coordinates are, latitude "+lat+", longitude "+lon;
+				phrase += ". My coordinates are, latitude "+lat+", longitude "+lon;
 			} catch (Exception e) {
-				Log.d("speakPhrase","Could not get coordinates : ");
+				Log.e("speakPhrase","Could not get coordinates : ");
 				e.printStackTrace();
 			}
 		}
 
 		mAudioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
-		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+		mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0);
+
 
 		for (int i = 0; i < 3; i++) {
+			HashMap<String, String> ttsParams = new HashMap<String, String>();
+			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+					String.valueOf(AudioManager.STREAM_VOICE_CALL));
+			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+					TAG+i);
+			
 			mTts.speak(phrase,
 					TextToSpeech.QUEUE_ADD, 
-					null);
+					ttsParams);
 		}
-		
-		mTts.shutdown();
-		mTts = null;
-		stopSelf();
+
 	}
-	
+
+
+
 	@Override
 	public void onInit(int status) {
-
-		try {
-			Thread.sleep(4000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		if (Config.D) Log.d(TAG, "onInit");
 		
-		speakPhrase();
+		mTts.setOnUtteranceCompletedListener(this);
+		
+		tm.listen(mPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
 	}
 
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+
+
+
+	@Override
+	public void onUtteranceCompleted(String utteranceId) {
+		if (Config.D) Log.d(TAG, "onUtteranceCompleted : "+utteranceId);
+		
+		if (utteranceId.equals(TAG+2)) {
+			if (Config.D) Log.d(TAG, "onUtteranceCompleted got last utterance, shutting down");
+			
+			mTts.shutdown();
+			mTts = null;
+			stopSelf();
+		}
+		
 	}
 
 }

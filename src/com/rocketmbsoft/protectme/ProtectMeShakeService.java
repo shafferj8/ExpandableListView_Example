@@ -37,7 +37,7 @@ import android.widget.Toast;
  * interact with the user, rather than doing something more disruptive such as
  * calling startActivity().
  */
-public class ProtectMeService extends Service  {
+public class ProtectMeShakeService extends Service  {
 	private NotificationManager mNM;
 
 	private SensorManager mSensorManager;  
@@ -82,12 +82,12 @@ public class ProtectMeService extends Service  {
 					
 					if (! startedAlert) {
 
-						Log.d("SensorShake Algorithm", "**************Sensor value : "+totalForce+ ", Force Threshold : "+forceThreshHold);
+						if (Config.D) Log.d("SensorShake Algorithm", "**************Sensor value : "+totalForce+ ", Force Threshold : "+forceThreshHold);
 
 						mSensorManager.unregisterListener(this);
 
 						// When the button is clicked, launch an activity through this intent
-						Intent launchPreferencesIntent = new Intent().setClass(ProtectMeService.this, ProtectMeAlertActivity.class);
+						Intent launchPreferencesIntent = new Intent().setClass(ProtectMeShakeService.this, ProtectMeAlertActivity.class);
 
 						launchPreferencesIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
@@ -97,7 +97,7 @@ public class ProtectMeService extends Service  {
 
 						startActivity(launchPreferencesIntent);
 
-						ProtectMeService.this.stopSelf();
+						ProtectMeShakeService.this.stopSelf();
 					}
 				}
 			}
@@ -116,8 +116,8 @@ public class ProtectMeService extends Service  {
 	 * IPC.
 	 */
 	public class LocalBinder extends Binder {
-		ProtectMeService getService() {
-			return ProtectMeService.this;
+		ProtectMeShakeService getService() {
+			return ProtectMeShakeService.this;
 		}
 	}
 
@@ -125,7 +125,7 @@ public class ProtectMeService extends Service  {
 	public void onCreate() {
 		super.onCreate();
 		
-		Log.d("ProtectMeService::onCreate","Entered");
+		if (Config.D) Log.d("ProtectMeShakeService::onCreate","Entered");
 		
 		mMediaPlayer = MediaPlayer.create(this, R.raw.beep);
 		mMediaPlayer.setLooping(false);
@@ -142,7 +142,7 @@ public class ProtectMeService extends Service  {
 		try {
 			MAX_SHAKE = Float.parseFloat(sharedPref.getString("et_force_threshold", "4.000000f"));
 		} catch (Exception e) {
-			Log.d("Caught Exception","Parsing threshold preferrence : "+e.getMessage());
+			Log.e("Caught Exception","Parsing threshold preferrence : "+e.getMessage());
 			e.printStackTrace();
 			MAX_SHAKE = 4.000000f;
 		}
@@ -194,7 +194,7 @@ public class ProtectMeService extends Service  {
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.i("LocalService", "Received start id " + startId + ": " + intent);
-		Toast.makeText(this, R.string.local_service_started, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, R.string.local_shake_service_started, Toast.LENGTH_SHORT).show();
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
 		return 1;
@@ -205,12 +205,12 @@ public class ProtectMeService extends Service  {
 	@Override
 	public void onDestroy() {
 		
-		Log.d("ProtectMeService::onDestroy","Entered");
+		if (Config.D) Log.d("ProtectMeShakeService::onDestroy","Entered");
 		
 		super.onDestroy();
 		
 		// Cancel the persistent notification.
-		mNM.cancel(R.string.local_service_started);
+		mNM.cancel(R.string.local_shake_service_started);
 		//
 		mSensorManager.unregisterListener(mSensorListener);
 
@@ -223,7 +223,7 @@ public class ProtectMeService extends Service  {
 		mMediaPlayer = null;
 		
 		// Tell the user we stopped.
-		Toast.makeText(this, R.string.local_service_stopped, Toast.LENGTH_SHORT).show();
+		Toast.makeText(this, R.string.local_shake_service_stopped, Toast.LENGTH_SHORT).show();
 	}
 
 	@Override
@@ -240,7 +240,7 @@ public class ProtectMeService extends Service  {
 	 */
 	private void showNotification() {
 		// In this sample, we'll use the same text for the ticker and the expanded notification
-		CharSequence text = getText(R.string.local_service_started);
+		CharSequence text = getText(R.string.local_shake_service_started);
 
 		// Set the icon, scrolling text and timestamp
 		Notification notification = new Notification(R.drawable.protectme, text,
@@ -256,7 +256,7 @@ public class ProtectMeService extends Service  {
 
 		// Send the notification.
 		// We use a layout id because it is a unique number.  We use it later to cancel.
-		mNM.notify(R.string.local_service_started, notification);
+		mNM.notify(R.string.local_shake_service_started, notification);
 	}
 }
 

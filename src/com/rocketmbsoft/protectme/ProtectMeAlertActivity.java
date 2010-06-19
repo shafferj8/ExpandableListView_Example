@@ -1,6 +1,7 @@
 package com.rocketmbsoft.protectme;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -21,7 +22,7 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
-public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnInitListener {
+public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 
 	private AudioManager mAudioManager; 
 	private TextToSpeech mTts;
@@ -43,7 +44,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("ProtectMeAlertActivity::onCreate","Entered");
+		if (Config.D) Log.d(TAG,"onCreate  Entered");
 
 		setContentView(R.layout.alert);
 
@@ -66,12 +67,6 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 					newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Tag");
 					wl.acquire();
 
-					try {
-						Thread.sleep(1000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 				}
 			});
 
@@ -86,15 +81,15 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 		timer = new Timer();
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
-		
+
 		try {
 			milliseconds_to_wait_for_response = (1000 * Integer.parseInt(prefs.getString("seconds_to_wait_for_response", "20")));
 		} catch (Exception e) {
-			Log.d("ProtectMeAlertActivity::onCreate","Exception : "+e.getMessage());
-			Log.d("ProtectMeAlertActivity::onCreate","Exception receiving preference, setting :milliseconds_to_wait_for_response, setting to 20");
+			Log.e("ProtectMeAlertActivity::onCreate","Exception : "+e.getMessage());
+			Log.e("ProtectMeAlertActivity::onCreate","Exception receiving preference, setting :milliseconds_to_wait_for_response, setting to 20");
 			milliseconds_to_wait_for_response = 20000;
 		}
-		
+
 		try {
 			mTts = new TextToSpeech(this,
 					this  // TextToSpeech.OnInitListener
@@ -115,6 +110,8 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 			mTts.setLanguage(Locale.US);
 		}
 
+		mTts.setOnUtteranceCompletedListener(this);
+
 		if (t1 != null) {
 			try {
 				t1.join();
@@ -134,17 +131,16 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	}
 
 	public void speak() {
+		HashMap<String, String> ttsParams = new HashMap<String, String>();
+		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+				String.valueOf(AudioManager.STREAM_MUSIC));
+		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+		"Are you OK?");
+
 		mTts.speak("Are you OK?",
-				TextToSpeech.QUEUE_ADD,  // Drop all pending entries in the playback queue.
-				null);
-		while (mTts.isSpeaking()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
+				TextToSpeech.QUEUE_ADD, 
+				ttsParams);
+
 	}
 
 
@@ -153,24 +149,8 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 
 		setMaxVolume();
 
-		try {
-			speak();
-		} catch (Exception e) {
+		speak();
 
-		}
-		
-		if (stop) {
-			return;
-		}
-
-		Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-		intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
-				RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
-		intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please Speak Your Challenge Word");
-
-		timer.schedule(task, milliseconds_to_wait_for_response);
-
-		startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
 	}
 
 	public void resetVolume() {
@@ -184,54 +164,21 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	}
 
 	private void callContact() {
-		// TODO 1. call the contact
-		//      2. Turn on Speakerphone
-		//      3. Speak the phrase the user entered
-		//      4. Send coordinates if requested
+		HashMap<String, String> ttsParams = new HashMap<String, String>();
+		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+				String.valueOf(AudioManager.STREAM_MUSIC));
+		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
+		"I'm calling the police");
 
 		mTts.speak("I'm calling the police", 
 				TextToSpeech.QUEUE_ADD,
-				null);
+				ttsParams);
 
-		while (mTts.isSpeaking()) {
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		try {
-			Intent intent = new Intent(Intent.ACTION_CALL);
-			String tel = prefs.getString("contact_phone", "");
-
-			intent.setData(Uri.parse("tel:"+tel));
-
-			mAudioManager.setSpeakerphoneOn(true);  
-			mAudioManager.setRouting(AudioManager.MODE_CURRENT, AudioManager.ROUTE_SPEAKER, 1); 
-
-			Intent launchPreferencesIntent = new Intent().setClass(this, ProtectMeSpeakService.class);
-
-			startService(launchPreferencesIntent);
-
-			if (keyboardWasLocked) {
-				lock.reenableKeyguard();
-				keyboardWasLocked = false;
-			}
-
-			// Start the Phone activity
-			startActivity(intent);
-
-			setMaxVolume();
-
-		} catch (Exception e) {
-			Log.e("SampleApp", "Failed to invoke call", e);
-		}
 	}
 
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-		Log.d("ProtectMeAlertActivity:onActivityResult", "Called");
+		if (Config.D) Log.d(TAG,"onActivityResult  Entered");
 
 		boolean found = false;
 
@@ -245,16 +192,16 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 
 			String phrase = prefs.getString("et_challenge_phrase", "");
 
-			Log.d("ProtectMeAlertActivity:onActivityResult", "Challenge Word is : "+phrase);
+			if (Config.D) Log.d(TAG,"Challenge Word is : "+phrase);
 
 			for (int i = 0; i < matches.size(); i++) {
-				Log.d("ProtectMeAlertActivity:onActivityResult", "----Value returned from the Voice recognizer : "+matches.get(i));
+				if (Config.D) Log.d(TAG,"onActivityResult ----Value returned from the Voice recognizer : "+matches.get(i));
 				if (matches.get(i).contains(phrase) || phrase.contains(matches.get(i))) {
 					// false alarm
 					resetVolume();
 
 					startService(new Intent(this,
-							ProtectMeService.class));
+							ProtectMeShakeService.class));
 
 					if (keyboardWasLocked) {
 						lock.reenableKeyguard();
@@ -276,7 +223,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@ Override
 	public void onDestroy() {
 		super.onDestroy();
-		Log.d(TAG,"onDestroy");
+		if (Config.D) Log.d(TAG,"onDestroy");
 
 		if (wl != null && wl.isHeld()) {
 			wl.release();
@@ -323,7 +270,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 	@ Override
 	public void onStart() {
 		super.onStart();
-		Log.d(TAG,"onStart");
+		if (Config.D) Log.d(TAG,"onStart");
 	}
 
 	@ Override
@@ -346,6 +293,49 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 					RecognizerIntent.EXTRA_RESULTS, ret);
 
 			onActivityResult(VOICE_RECOGNITION_REQUEST_CODE, RESULT_OK, map);
+		}
+	}
+
+
+
+	@Override
+	public void onUtteranceCompleted(String utteranceId) {
+		if (utteranceId.equals("Are you OK?")) {
+			if (stop) {
+				return;
+			}
+
+			Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+			intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+					RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+			intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Please Speak Your Challenge Word");
+
+			timer.schedule(task, milliseconds_to_wait_for_response);
+
+			startActivityForResult(intent, VOICE_RECOGNITION_REQUEST_CODE);
+		} else if (utteranceId.equals("I'm calling the police")) {
+			try {
+				Intent intent = new Intent(Intent.ACTION_CALL);
+				String tel = prefs.getString("contact_phone", "");
+
+				intent.setData(Uri.parse("tel:"+tel));
+
+				Intent launchPreferencesIntent = new Intent().setClass(this, ProtectMeSpeakService.class);
+
+				startService(launchPreferencesIntent);
+
+				if (keyboardWasLocked) {
+					lock.reenableKeyguard();
+					keyboardWasLocked = false;
+				}
+
+				// Start the Phone activity
+				startActivity(intent);
+
+
+			} catch (Exception e) {
+				Log.e("SampleApp", "Failed to invoke call", e);
+			}
 		}
 	}
 }
