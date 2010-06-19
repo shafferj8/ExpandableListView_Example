@@ -67,6 +67,9 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
     		"shake_preference_screen");
 		
 		shakeCb.setOnPreferenceClickListener(this);
+		
+		orientationPs.setEnabled(false);
+		shakeCb.setEnabled(false);
 
 		updateTriggerMethod();
 	}

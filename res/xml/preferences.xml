@@ -2,7 +2,7 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-	
+
 
 	<PreferenceCategory android:title="Choose a Contact">
 
@@ -31,33 +31,66 @@
 		<EditTextPreference android:dialogTitle="Challenge Word"
 			android:title="Type in the Challenge Word" android:key="et_challenge_phrase"
 			android:summary="Secret word you will speak to let Protect Me service know you are OK."></EditTextPreference>
-	
-</PreferenceCategory><PreferenceCategory android:title="Please Select Your Activation Method"><CheckBoxPreference android:title="Orientation is Enabled" android:key="shake_check_box"></CheckBoxPreference><PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:key="orientation_preference_screen" android:title="Orientation Preferences"><PreferenceCategory android:selectable="true" android:key="orientation_preferences" android:title="Orientation Preferences" android:layout="@layout/orientation">
-	
-	
-		
-				
 
-		
-		</PreferenceCategory></PreferenceScreen><PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" android:title="Shake Preferences" android:key="shake_preference_screen"><PreferenceCategory android:key="shake_preferences" android:selectable="true" android:title="Shake Preferences">
-	<EditTextPreference android:dialogTitle="Motion Threshold" android:title="Force Threshold" android:key="et_force_threshold" android:defaultValue="4" android:summary="Value that should be adjusted to match the sensitivty of your phone. Default is around 4">
-	</EditTextPreference>
-	<ListPreference android:entries="@array/list_seconds_of_shake" android:entryValues="@array/list_seconds_of_shake_value" android:dialogTitle="Chose the amount of seconds of shaking" android:key="seconds_of_shake" android:title="Seconds Of Shaking" android:negativeButtonText="Cancel" android:enabled="true" android:summary="Seconds of shaking required to show alert." android:defaultValue="Four Seconds">
-		
-		</ListPreference><EditTextPreference android:dialogTitle="Seconds To Wait For Response (Integer)" android:title="Seconds to Wait For Challenge Word (Integer)" android:key="seconds_to_wait_for_response" android:defaultValue="20" android:summary="Amount of seconds to wait for the challenge word, before calling the contact.">
-		</EditTextPreference>
-		
-				<com.rocketmbsoft.protectme.ProtectMeSlderPreference android:key="int_sensitivity" android:defaultValue="50" android:title="Sensitivity" />
+	</PreferenceCategory>
+	<PreferenceCategory android:title="Please Select Your Activation Method">
+		<CheckBoxPreference android:title="Orientation is Enabled"
+			android:key="shake_check_box"></CheckBoxPreference>
+		<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+			android:key="orientation_preference_screen" android:title="Orientation Preferences">
+			<PreferenceCategory android:selectable="true"
+				android:key="orientation_preferences" android:title="Orientation Preferences">
 
-		
-		</PreferenceCategory></PreferenceScreen></PreferenceCategory>
-	
-	
-		
-	
+				<com.rocketmbsoft.protectme.ProtectMeOrientationPreference
+					android:key="angle_of_activation" android:defaultValue="90"
+					android:title="Angle Of Activation" />
 
 
-	
+
+
+
+
+			</PreferenceCategory>
+		</PreferenceScreen>
+		<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+			android:title="Shake Preferences" android:key="shake_preference_screen">
+			<PreferenceCategory android:key="shake_preferences"
+				android:selectable="true" android:title="Shake Preferences">
+				<EditTextPreference android:dialogTitle="Motion Threshold"
+					android:title="Force Threshold" android:key="et_force_threshold"
+					android:defaultValue="4"
+					android:summary="Value that should be adjusted to match the sensitivty of your phone. Default is around 4">
+				</EditTextPreference>
+				<ListPreference android:entries="@array/list_seconds_of_shake"
+					android:entryValues="@array/list_seconds_of_shake_value"
+					android:dialogTitle="Chose the amount of seconds of shaking"
+					android:key="seconds_of_shake" android:title="Seconds Of Shaking"
+					android:negativeButtonText="Cancel" android:enabled="true"
+					android:summary="Seconds of shaking required to show alert."
+					android:defaultValue="Four Seconds">
+
+				</ListPreference>
+				<EditTextPreference android:dialogTitle="Seconds To Wait For Response (Integer)"
+					android:title="Seconds to Wait For Challenge Word (Integer)"
+					android:key="seconds_to_wait_for_response" android:defaultValue="20"
+					android:summary="Amount of seconds to wait for the challenge word, before calling the contact.">
+				</EditTextPreference>
+
+				<com.rocketmbsoft.protectme.ProtectMeSlderPreference
+					android:key="int_sensitivity" android:defaultValue="50"
+					android:title="Sensitivity" />
+
+
+			</PreferenceCategory>
+		</PreferenceScreen>
+	</PreferenceCategory>
+
+
+
+
+
+
+
 
 
 
