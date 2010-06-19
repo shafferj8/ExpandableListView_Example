@@ -70,6 +70,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		
 		orientationPs.setEnabled(false);
 		shakeCb.setEnabled(false);
+		shakeCb.setChecked(true);
 
 		updateTriggerMethod();
 	}
