@@ -38,19 +38,12 @@
 			android:key="shake_check_box"></CheckBoxPreference>
 		<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 			android:key="orientation_preference_screen" android:title="Orientation Preferences">
-			<PreferenceCategory android:selectable="true"
+			<!--  PreferenceCategory android:selectable="true"
 				android:key="orientation_preferences" android:title="Orientation Preferences">
 
-				<com.rocketmbsoft.protectme.ProtectMeOrientationPreference
-					android:key="angle_of_activation" android:defaultValue="90"
-					android:title="Angle Of Activation" />
-
-
-
-
-
-
-			</PreferenceCategory>
+			</PreferenceCategory -->
+			
+			
 		</PreferenceScreen>
 		<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 			android:title="Shake Preferences" android:key="shake_preference_screen">

@@ -1,33 +1,28 @@
 package com.rocketmbsoft.protectme;
     
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.preference.Preference;
-import android.util.AttributeSet;
+import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.OrientationEventListener;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
-public class ProtectMeOrientationPreference extends Preference implements OnClickListener {
-	public ProtectMeOrientationPreference(Context context) {
-		super(context);
-		// TODO Auto-generated constructor stub
-	}
+public class ProtectMeOrientationPreferenceActivity extends Activity implements OnClickListener {
 	
-	public ProtectMeOrientationPreference(Context context, AttributeSet ats) {
-		super(context, ats);
-	}
 
+	static final String TAG = "ProtectMeOrientationPreference";
 
 	DemoView demoview;
 	
@@ -40,12 +35,13 @@ public class ProtectMeOrientationPreference extends Preference implements OnClic
 	
 	int currentAngle = 55;
 	
+	
 	/** Called when the activity is first created. */
 	@Override
-	protected View onCreateView(ViewGroup parent){
-		super.onCreateView(parent);
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
 		
-		mOrientationListener = new OrientationEventListener(getContext()) {
+		mOrientationListener = new OrientationEventListener(this) {
 			
 			@Override
 			public void onOrientationChanged(int orientation) {
@@ -57,16 +53,17 @@ public class ProtectMeOrientationPreference extends Preference implements OnClic
 		
 		mOrientationListener.enable();
 		
-		demoview = new DemoView(getContext());
+		demoview = new DemoView(this);
+		setContentView(demoview);
 		
-		set = new Button(getContext());
+		set = new Button(this);
 		
 		set.setText("Set");
 		set.setWidth(300);
 		
 		set.setOnClickListener(this);
 		
-		LinearLayout layout = new LinearLayout(getContext());
+		LinearLayout layout = new LinearLayout(this);
 
 		LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(
 				LinearLayout.LayoutParams.FILL_PARENT,
@@ -78,33 +75,42 @@ public class ProtectMeOrientationPreference extends Preference implements OnClic
 		
 		layout.setPadding(15, 10, 10, 10);
 		
-		layout.addView(demoview);
+		this.addContentView(layout, params1);
+
+	}
+	
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		mOrientationListener.enable();
+	}
+	
+	@Override
+	public void onPause() {
+		super.onPause();
 		
-		return layout;
+		mOrientationListener.disable();
+	}
+	
+	@Override
+	public void onStop() {
+		super.onStop();
+		
+		set.setOnClickListener(null);
+		mOrientationListener.disable();
+		demoview = null;
+		mOrientationListener  = null;
+		set = null;
 		
 	}
-//	
-//	@Override
-//	public void onStart() {
-//		super.onStart();
-//		mOrientationListener.enable();
-//	}
-//	
-//	@Override
-//	public void onPause() {
-//		super.onPause();
-//		
-//		mOrientationListener.disable();
-//	}
-//	
-//	@Override
-//	public void onStop() {
-//		super.onStop();
-//		
-//	}
+	
+
 
 	private class DemoView extends View {
 
+		private static final String TAG = "DemoView";
+		
 		public DemoView(Context context){
 			super(context);
 		}
@@ -112,6 +118,8 @@ public class ProtectMeOrientationPreference extends Preference implements OnClic
 		@Override 
 		protected void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
+			
+			if (Config.D) Log.d(TAG, "onDraw");
 			
 			Paint paint = new Paint();
 			paint.setStyle(Paint.Style.FILL);
@@ -187,5 +195,12 @@ public class ProtectMeOrientationPreference extends Preference implements OnClic
 	public void onClick(View v) {
 		anglePreference = currentAngle;
 		
+		Intent data = new Intent();
+		
+		data.putExtra("angle_preference", anglePreference);
+		setResult(Activity.RESULT_OK, data);
+		
+		this.finish();
 	}
+
 }

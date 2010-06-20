@@ -176,6 +176,7 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 
 	}
 
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
 		if (Config.D) Log.d(TAG,"onActivityResult  Entered");
