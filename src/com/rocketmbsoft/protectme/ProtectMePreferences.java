@@ -53,6 +53,15 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		// Load the XML preferences file
 		addPreferencesFromResource(R.xml.preferences);
 
+		if (getPreferenceManager().getSharedPreferences().contains(Config.ANGLE_PREFERENCE)) {
+			if (Config.D)Log.d(TAG, "Angle Preference doesn't exeist in preferences, adding...");
+			
+			Intent intent = new Intent();
+
+			intent.putExtra(Config.ANGLE_PREFERENCE, 90);
+			addPreferencesFromIntent(intent);
+		}
+
 		if (Config.D) Log.d(TAG,"Prefernce Count : "+getPreferenceScreen().getPreferenceCount());
 
 		getPreferenceManager().findPreference("str_contact").setOnPreferenceClickListener(this);
@@ -68,7 +77,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 
 		shakeCb.setOnPreferenceClickListener(this);
 
-		int anglePref = getPreferenceManager().getSharedPreferences().getInt("angle_preference", 95);
+		int anglePref = getPreferenceManager().getSharedPreferences().getInt(Config.ANGLE_PREFERENCE, 95);
 
 		orientationPs.setSummary("Activation Angle : "+anglePref);
 
@@ -129,9 +138,9 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		case (ORIENTATION) :
 		{
 			if (Config.D) Log.d(TAG,"Orientation activity result");
-			
+
 			if (resultCode == Activity.RESULT_OK) {
-				int anglePref = data.getIntExtra("angle_preference", 90);
+				int anglePref = data.getIntExtra(Config.ANGLE_PREFERENCE, 90);
 
 				if (Config.D) Log.d(TAG,"Received Angle Preference : "+anglePref);
 
@@ -154,8 +163,6 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 			if (Config.D) Log.d(TAG,"Orientation Screen Selected");
 
 			Intent launchPreferencesIntent = new Intent().setClass(this, ProtectMeOrientationPreferenceActivity.class);
-
-			launchPreferencesIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
 			startActivityForResult(launchPreferencesIntent, ORIENTATION);
 		}
