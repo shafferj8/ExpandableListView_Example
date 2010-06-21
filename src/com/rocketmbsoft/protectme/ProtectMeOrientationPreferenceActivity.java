@@ -10,6 +10,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
@@ -76,6 +77,9 @@ public class ProtectMeOrientationPreferenceActivity extends Activity implements 
 		layout.setPadding(15, 10, 10, 10);
 		
 		this.addContentView(layout, params1);
+		
+		anglePreference = 
+			PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt("angle_preference", 90);
 
 	}
 	
@@ -199,6 +203,9 @@ public class ProtectMeOrientationPreferenceActivity extends Activity implements 
 		
 		data.putExtra("angle_preference", anglePreference);
 		setResult(Activity.RESULT_OK, data);
+		
+		PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("angle_preference", anglePreference);
+		PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().commit();
 		
 		this.finish();
 	}

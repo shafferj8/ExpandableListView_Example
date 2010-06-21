@@ -68,6 +68,10 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 
 		shakeCb.setOnPreferenceClickListener(this);
 
+		int anglePref = getPreferenceManager().getSharedPreferences().getInt("angle_preference", 95);
+
+		orientationPs.setSummary("Activation Angle : "+anglePref);
+
 		updateTriggerMethod();
 	}
 
@@ -94,6 +98,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 
 		switch (reqCode) {
 		case (PICK_CONTACT) :
+		{
 			if (resultCode == Activity.RESULT_OK) {
 				Uri contactData = data.getData();
 
@@ -118,22 +123,27 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 					editor.commit();
 				}
 			}
-		break;
-		
+			break;
+		}
+
 		case (ORIENTATION) :
+		{
+			if (Config.D) Log.d(TAG,"Orientation activity result");
+			
 			if (resultCode == Activity.RESULT_OK) {
 				int anglePref = data.getIntExtra("angle_preference", 90);
-				
+
 				if (Config.D) Log.d(TAG,"Received Angle Preference : "+anglePref);
 
-				SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
-				editor.putInt("angle_preference", anglePref);
+				orientationPs.setSummary("Activation Angle : "+anglePref);
 
-				editor.commit();
 			}
+			break;
+		}
+
 		}
 	}
-	
+
 	@Override
 	public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, Preference preference) {
 
@@ -157,7 +167,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 	public boolean onPreferenceClick(Preference preference) {
 
 		if (Config.D) Log.d(TAG,"Preference Selected : "+preference.getKey());
-		
+
 		if (preference.getKey().equals("str_contact")) {
 			if (Config.D) Log.d(TAG,"Trying to start intent");
 
