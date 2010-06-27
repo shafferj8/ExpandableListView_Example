@@ -201,8 +201,13 @@ public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnI
 					// false alarm
 					resetVolume();
 
-					startService(new Intent(this,
-							ProtectMeShakeService.class));
+					if (prefs.getBoolean(Config.SHAKE_IS_CHECKED, true)) {
+						startService(new Intent(this,
+								ProtectMeShakeService.class));
+					} else {
+						startService(new Intent(this,
+								ProtectMeOrientationService.class));						
+					}
 
 					if (keyboardWasLocked) {
 						lock.reenableKeyguard();

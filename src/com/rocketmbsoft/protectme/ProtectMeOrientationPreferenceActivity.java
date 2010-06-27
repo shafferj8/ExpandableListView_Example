@@ -77,9 +77,6 @@ public class ProtectMeOrientationPreferenceActivity extends Activity implements 
 		layout.setPadding(15, 10, 10, 10);
 		
 		this.addContentView(layout, params1);
-		
-		anglePreference = 
-			PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).getInt("angle_preference", 90);
 
 	}
 	
@@ -191,7 +188,7 @@ public class ProtectMeOrientationPreferenceActivity extends Activity implements 
 			paint.setTextSize(20);
 			paint.setColor(Color.RED);
 			canvas.drawText("Activation Angle : "+currentAngle, 30, 75, paint);
-			canvas.drawText("Current Activation Angle : "+anglePreference, 30, 115, paint);
+			// canvas.drawText("Current Activation Angle : "+anglePreference, 30, 115, paint);
 		}
 	}
 
@@ -201,11 +198,8 @@ public class ProtectMeOrientationPreferenceActivity extends Activity implements 
 		
 		Intent data = new Intent();
 		
-		data.putExtra("angle_preference", anglePreference);
+		data.putExtra(Config.ANGLE_PREFERENCE, anglePreference);
 		setResult(Activity.RESULT_OK, data);
-		
-		PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().putInt("angle_preference", anglePreference);
-		PreferenceManager.getDefaultSharedPreferences(getApplicationContext()).edit().commit();
 		
 		this.finish();
 	}

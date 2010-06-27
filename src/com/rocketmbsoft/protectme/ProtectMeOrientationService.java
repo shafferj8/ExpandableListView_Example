@@ -3,26 +3,19 @@
 package com.rocketmbsoft.protectme;
 
 
-import java.util.concurrent.Semaphore;
-
 import com.rocketmbsoft.protectme.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.hardware.Sensor;
-import android.hardware.SensorEvent;
-import android.hardware.SensorEventListener;
-import android.hardware.SensorManager;
-import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.OrientationEventListener;
 import android.widget.Toast;
 
 
@@ -40,31 +33,15 @@ import android.widget.Toast;
 public class ProtectMeOrientationService extends Service  {
 	private NotificationManager mNM;
 
-	private SensorManager mSensorManager;  
-
 	private SharedPreferences sharedPref;
 
-	final Semaphore lock = new Semaphore(1);
-	int count = 0;
-	private static boolean startedAlert = false;
+	int y, currentAngle;
 
+	OrientationEventListener mOrientationListener = null;
 
+	private int anglePref;	
 
-	private SensorEventListener mSensorListener = new SensorEventListener() { 
-
-		@Override
-		public void onSensorChanged(SensorEvent event) {
-			
-
-
-		}
-
-		@Override
-		public void onAccuracyChanged(Sensor sensor, int accuracy) {
-			// TODO Auto-generated method stub
-
-		} 
-	};
+	private static final String TAG = "ProtectMeOrientationService";
 
 	/**
 	 * Class for clients to access.  Because we know this service always
@@ -80,20 +57,47 @@ public class ProtectMeOrientationService extends Service  {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
-		if (Config.D) Log.d("ProtectMeShakeService::onCreate","Entered");
-		
 
-		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+		if (Config.D) Log.d(TAG ,"onCreate - Entered");
 
 		sharedPref = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
 		mNM = (NotificationManager)getSystemService(NOTIFICATION_SERVICE);
-		mSensorManager = (SensorManager)getSystemService(Context.SENSOR_SERVICE); 
 
-		mSensorManager.registerListener(mSensorListener, 
-				mSensorManager.getDefaultSensor(Sensor.TYPE_ORIENTATION), 
-				SensorManager.SENSOR_DELAY_NORMAL);
+		anglePref = sharedPref.getInt(Config.ANGLE_PREFERENCE, 90);
+
+		
+		mOrientationListener = new OrientationEventListener(this) {
+
+			@Override
+			public void onOrientationChanged(int orientation) {
+				y = (360 - orientation);
+
+				if (y >= 180) {
+					currentAngle = y - 180;
+				} else {
+					currentAngle = y;
+				}
+
+				if (currentAngle > anglePref) {
+					if (Config.D)Log.d(TAG, "Acitvated by orientation angle"); 
+					
+					mOrientationListener.disable();
+
+					// When the button is clicked, launch an activity through this intent
+					Intent launchPreferencesIntent = new Intent().setClass(
+							ProtectMeOrientationService.this, ProtectMeAlertActivity.class);
+
+					launchPreferencesIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+					startActivity(launchPreferencesIntent);
+
+					ProtectMeOrientationService.this.stopSelf();
+				}
+			}
+		};
+		
+		mOrientationListener.enable();
 
 		// Display a notification about us starting.  We put an icon in the status bar.
 		showNotification();
@@ -106,7 +110,7 @@ public class ProtectMeOrientationService extends Service  {
 	}
 
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.i("LocalService", "Received start id " + startId + ": " + intent);
+		Log.i(TAG, "Received start id " + startId + ": " + intent);
 		Toast.makeText(this, R.string.local_orientation_service_started, Toast.LENGTH_SHORT).show();
 		// We want this service to continue running until it is explicitly
 		// stopped, so return sticky.
@@ -117,20 +121,17 @@ public class ProtectMeOrientationService extends Service  {
 
 	@Override
 	public void onDestroy() {
-		
-		if (Config.D) Log.d("ProtectMeShakeService::onDestroy","Entered");
-		
+
+		if (Config.D) Log.d(TAG,"onDestroy - Entered");
+
 		super.onDestroy();
-		
+
 		// Cancel the persistent notification.
 		mNM.cancel(R.string.local_orientation_service_started);
-		//
-		mSensorManager.unregisterListener(mSensorListener);
 
-		lock.release();
+		mOrientationListener.disable();
+		mOrientationListener  = null;
 
-		startedAlert = false;
-		
 		// Tell the user we stopped.
 		Toast.makeText(this, R.string.local_orientation_service_stopped, Toast.LENGTH_SHORT).show();
 	}

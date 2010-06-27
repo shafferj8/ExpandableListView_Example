@@ -53,15 +53,6 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		// Load the XML preferences file
 		addPreferencesFromResource(R.xml.preferences);
 
-		if (getPreferenceManager().getSharedPreferences().contains(Config.ANGLE_PREFERENCE)) {
-			if (Config.D)Log.d(TAG, "Angle Preference doesn't exeist in preferences, adding...");
-			
-			Intent intent = new Intent();
-
-			intent.putExtra(Config.ANGLE_PREFERENCE, 90);
-			addPreferencesFromIntent(intent);
-		}
-
 		if (Config.D) Log.d(TAG,"Prefernce Count : "+getPreferenceScreen().getPreferenceCount());
 
 		getPreferenceManager().findPreference("str_contact").setOnPreferenceClickListener(this);
@@ -77,7 +68,7 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 
 		shakeCb.setOnPreferenceClickListener(this);
 
-		int anglePref = getPreferenceManager().getSharedPreferences().getInt(Config.ANGLE_PREFERENCE, 95);
+		int anglePref = getPreferenceManager().getSharedPreferences().getInt(Config.ANGLE_PREFERENCE, 90);
 
 		orientationPs.setSummary("Activation Angle : "+anglePref);
 
@@ -145,6 +136,11 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 				if (Config.D) Log.d(TAG,"Received Angle Preference : "+anglePref);
 
 				orientationPs.setSummary("Activation Angle : "+anglePref);
+				
+				SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
+				
+				editor.putInt(Config.ANGLE_PREFERENCE, anglePref);
+				editor.commit();
 
 			}
 			break;
@@ -193,15 +189,23 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 
 	public void updateTriggerMethod() {
 
+		SharedPreferences.Editor editor = getPreferenceManager().getSharedPreferences().edit();
+		
 		if (shakeCb.isChecked()) {
 			shakeCb.setTitle(R.string.shake_cb_enabled);
 			shakePs.setEnabled(true);
 			orientationPs.setEnabled(false);
+			
+			editor.putBoolean(Config.SHAKE_IS_CHECKED, true);
 		} else {
 			shakeCb.setTitle(R.string.shake_cb_disabled);
 			shakePs.setEnabled(false);
 			orientationPs.setEnabled(true);
+			
+			editor.putBoolean(Config.SHAKE_IS_CHECKED, false);
 		}
+		
+		editor.commit();
 	}
 
 }

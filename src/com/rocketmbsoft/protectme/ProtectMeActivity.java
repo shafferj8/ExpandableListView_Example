@@ -42,7 +42,8 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	boolean orientationServiceIsRunning = false;
 	private static final int REQUEST_CODE_PREFERENCES = 0;
 	private ActivityManager mActivityManager;
-	
+	SharedPreferences prefs;
+
 	private static final String TAG = "ProtectMeActivity";
 
 	/** Called when the activity is first created. */
@@ -50,11 +51,13 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		
+
 		if (Config.D) Log.d(TAG, "onCreate Entered");
 
 		PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
-		
+
+		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+
 		builder = new AlertDialog.Builder(this);
 		builder.setMessage("Are you sure you want to exit?")
 		.setCancelable(false)
@@ -63,7 +66,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 				dialog.cancel();
 			}
 		});
-		
+
 		alert = builder.create();
 
 		mActivityManager = (ActivityManager)getSystemService(ACTIVITY_SERVICE);
@@ -89,29 +92,27 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 			public void onClick(View v)
 			{
 
-				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-				
 				if (prefs.getString("contact_phone", "").equals("")) {
 					alert.setMessage("Please set your contact within the setup, then start ProtectMe");
 					alert.show();
-					
+
 					return;
 				}
 
 				if (prefs.getString("et_challenge_phrase", "").equals("")) {
 					alert.setMessage("Please set your challenge word within the setup, then start ProtectMe");
 					alert.show();
-			
+
 					return;
 				}
 
-				// Make sure the service is started.  It will continue running
-				// until someone calls stopService().  The Intent we use to find
-				// the service explicitly specifies our service component, because
-				// we want it running in our own process and don't want other
-				// applications to replace it.
-				startService(new Intent(ProtectMeActivity.this,
-						ProtectMeShakeService.class));
+				if (prefs.getBoolean(Config.SHAKE_IS_CHECKED, true)) {
+					startService(new Intent(ProtectMeActivity.this,
+							ProtectMeShakeService.class));
+				} else {
+					startService(new Intent(ProtectMeActivity.this,
+							ProtectMeOrientationService.class));
+				}
 
 				checkServices();
 			}
@@ -120,12 +121,11 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 		btnStopServices.setOnClickListener(new OnClickListener() {
 			public void onClick(View v)
 			{
-
-				// Cancel a previous call to startService().  Note that the
-				// service will not actually stop at this point if there are
-				// still bound clients.
 				stopService(new Intent(ProtectMeActivity.this,
 						ProtectMeShakeService.class));
+
+				stopService(new Intent(ProtectMeActivity.this,
+						ProtectMeOrientationService.class));
 
 				checkServices();
 			}
@@ -211,31 +211,31 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 		super.onStart();
 		// checkServices();
 	}
-	
+
 	/* Creates the menu items */
 	public boolean onCreateOptionsMenu(Menu menu) {
-	    menu.add(0, 1234, 0, "Protect Me Users Manual");
-	    return true;
+		menu.add(0, 1234, 0, "Protect Me Users Manual");
+		return true;
 	}
 
 	/* Handles item selections */
 	public boolean onOptionsItemSelected(MenuItem item) {
-	    switch (item.getItemId()) {
-	    case 1234:
+		switch (item.getItemId()) {
+		case 1234:
 			Intent launchPreferencesIntent = new Intent().setClass(this, ProtectMeSumActivity.class);
 
 			// Make it a subactivity so we know when it returns
 			startActivity(launchPreferencesIntent);
-	    	
-	        return true;
-	    }
-	    return false;
+
+			return true;
+		}
+		return false;
 	}
-	
+
 	public void onDestroy() {
 		if (Config.D) Log.d("ProtectMeActivity::onDestroy","Entered");
 		super.onDestroy();
-		
+
 		btnMainContinuous = null;
 		btnMainPreferences = null;
 		btnStopServices = null;

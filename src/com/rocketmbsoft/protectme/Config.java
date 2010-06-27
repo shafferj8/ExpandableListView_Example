@@ -4,5 +4,6 @@ public class Config {
 	
 	public static final boolean D = true;
 	public static final String ANGLE_PREFERENCE = "angle_preference";
+	public static final String SHAKE_IS_CHECKED = "shake_is_checked";
 
 }

@@ -78,4 +78,6 @@
 		</PreferenceScreen>
 	</PreferenceCategory>
 
+
+<Preference android:shouldDisableView="true" android:key="angle_preference" android:enabled="true" android:defaultValue="93" android:selectable="false"></Preference>
 </PreferenceScreen>
