@@ -105,11 +105,10 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 			if (resultCode == Activity.RESULT_OK) {
 				Uri contactData = data.getData();
 
-				VERSION v = new VERSION();
 				Cursor c = null;
 				
 				if (VERSION.SDK_INT > Build.VERSION_CODES.DONUT) {
-					Log.d(TAG, "SDK is greater than DONUT");
+					if (Config.D) Log.d(TAG, "SDK is greater than DONUT");
 					c = getContentResolver().query(contactData,
 							new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, 
 							ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null, null);
