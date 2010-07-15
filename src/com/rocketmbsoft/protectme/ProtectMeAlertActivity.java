@@ -22,7 +22,8 @@ import android.speech.RecognizerIntent;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
 
-public class ProtectMeAlertActivity extends Activity implements TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
+public class ProtectMeAlertActivity extends Activity implements 
+TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 
 	private AudioManager mAudioManager; 
 	private TextToSpeech mTts;

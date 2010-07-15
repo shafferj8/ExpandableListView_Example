@@ -22,12 +22,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceScreen;
-import android.provider.Contacts;
+import android.provider.Contacts.Phones;
+import android.provider.ContactsContract;
 import android.util.Log;
 
 /**
@@ -102,8 +105,20 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 			if (resultCode == Activity.RESULT_OK) {
 				Uri contactData = data.getData();
 
-				Cursor c = getContentResolver().query(contactData,
-						new String[]{Contacts.People.DISPLAY_NAME, Contacts.Phones.NUMBER}, null, null, null);
+				VERSION v = new VERSION();
+				Cursor c = null;
+				
+				if (VERSION.SDK_INT > Build.VERSION_CODES.DONUT) {
+					Log.d(TAG, "SDK is greater than DONUT");
+					c = getContentResolver().query(contactData,
+							new String[]{ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME, 
+							ContactsContract.CommonDataKinds.Phone.NUMBER}, null, null, null);
+				} else {
+					Log.d(TAG, "SDK is DONUT or lower");
+					c = getContentResolver().query(contactData,
+							new String[]{Phones.DISPLAY_NAME, 
+							Phones.NUMBER}, null, null, null);
+				}
 
 				for (int i = 0; i < c.getColumnCount(); i++) {
 					if (Config.D) Log.d(TAG,"Column Name : *"+c.getColumnName(i)+"*");
@@ -174,11 +189,15 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		if (preference.getKey().equals("str_contact")) {
 			if (Config.D) Log.d(TAG,"Trying to start intent");
 
-			Intent intent = new Intent(
-					Intent.ACTION_PICK, 
-					Contacts.Phones.CONTENT_URI);
+			Intent contactintent = new Intent (Intent.ACTION_PICK);
+			
+			if (VERSION.SDK_INT > Build.VERSION_CODES.DONUT) {
+				contactintent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
+			} else {
+				contactintent.setType(Phones.CONTENT_TYPE);
+			}
 
-			startActivityForResult(intent, PICK_CONTACT);
+			startActivityForResult(contactintent, PICK_CONTACT);
 
 		} else if (preference.getKey().equals("shake_check_box")) {
 			updateTriggerMethod();
