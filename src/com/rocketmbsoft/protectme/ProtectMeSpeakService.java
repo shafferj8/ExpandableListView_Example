@@ -51,6 +51,9 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+					AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+					
+					am.setSpeakerphoneOn(true);
 					
 					speakPhrase();
 				}
@@ -147,8 +150,8 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 
 		for (int i = 0; i < 3; i++) {
 			HashMap<String, String> ttsParams = new HashMap<String, String>();
-			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
-					String.valueOf(AudioManager.STREAM_VOICE_CALL));
+			// ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+			//		String.valueOf(AudioManager.STREAM_VOICE_CALL));
 			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
 					TAG+i);
 			
