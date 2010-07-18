@@ -84,10 +84,12 @@ TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 		prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
 
 		try {
-			milliseconds_to_wait_for_response = (1000 * Integer.parseInt(prefs.getString("seconds_to_wait_for_response", "20")));
+			milliseconds_to_wait_for_response = (1000 * Integer.parseInt(
+					prefs.getString("seconds_to_wait_for_response", "20")));
 		} catch (Exception e) {
 			Log.e("ProtectMeAlertActivity::onCreate","Exception : "+e.getMessage());
-			Log.e("ProtectMeAlertActivity::onCreate","Exception receiving preference, setting :milliseconds_to_wait_for_response, setting to 20");
+			Log.e("ProtectMeAlertActivity::onCreate","Exception receiving preference,"+
+					" setting :milliseconds_to_wait_for_response, setting to 20");
 			milliseconds_to_wait_for_response = 20000;
 		}
 
@@ -160,8 +162,12 @@ TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 	}
 
 	public void setMaxVolume() {
-		mAudioManager.setStreamVolume(AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_SYSTEM), 0);
-		mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0);
+		mAudioManager.setStreamVolume(
+				AudioManager.STREAM_MUSIC, mAudioManager.getStreamMaxVolume(
+						AudioManager.STREAM_SYSTEM), 0);
+		mAudioManager.setStreamVolume(
+				AudioManager.STREAM_VOICE_CALL, mAudioManager.getStreamMaxVolume(
+						AudioManager.STREAM_VOICE_CALL), 0);
 	}
 
 	private void callContact() {
@@ -323,6 +329,7 @@ TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 		} else if (utteranceId.equals("I'm calling the police")) {
 			try {
 				Intent intent = new Intent(Intent.ACTION_CALL);
+
 				String tel = prefs.getString("contact_phone", "");
 
 				intent.setData(Uri.parse("tel:"+tel));

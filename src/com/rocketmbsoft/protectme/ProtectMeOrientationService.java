@@ -71,6 +71,9 @@ public class ProtectMeOrientationService extends Service  {
 
 			@Override
 			public void onOrientationChanged(int orientation) {
+				
+				if (Config.D) Log.d(TAG, "Orientation changed : "+orientation);
+				
 				y = (360 - orientation);
 
 				if (y >= 180) {
@@ -78,6 +81,12 @@ public class ProtectMeOrientationService extends Service  {
 				} else {
 					currentAngle = y;
 				}
+				
+				if (orientation > 180) {
+					currentAngle = 180 - currentAngle;
+				}
+				
+				currentAngle = Math.abs(currentAngle - 180);
 
 				if (currentAngle > anglePref) {
 					if (Config.D)Log.d(TAG, "Acitvated by orientation angle"); 

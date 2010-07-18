@@ -13,6 +13,7 @@ import android.app.ActivityManager.RunningServiceInfo;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -136,6 +137,30 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 		btnMainPreferences.setOnClickListener(this);
 
 		checkServices();
+		
+		if (prefs.contains("str_version")) {
+			String ver = prefs.getString("str_version", "");
+			
+			if (Config.D) Log.d(TAG,"ProtectMe Software version : "+ver);
+			
+			if (! ver.equals(Config.VERSION_STR)) {
+				//show changes and set the version to the latest
+				Editor e = prefs.edit();
+				e.putString("str_version", Config.VERSION_STR);
+				e.commit();
+				
+				ProtectMeSumActivity.showAboutDialog(this);
+			}
+		} else {
+			if (Config.D) Log.d(TAG,"No software version set for ProtectMe");
+			
+			//show changes and set the version to the latest
+			Editor e = prefs.edit();
+			e.putString("str_version", Config.VERSION_STR);
+			e.commit();			
+			
+			ProtectMeSumActivity.showAboutDialog(this);
+		}
 
 	}
 

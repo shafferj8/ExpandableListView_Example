@@ -108,8 +108,10 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 
 	public void speakPhrase() {
 
-		String phrase = PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getString("et_text_to_say_to_your_contact", "");
-		boolean coords = PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getBoolean("cb_send_coordinates", true);
+		String phrase = PreferenceManager.getDefaultSharedPreferences(
+				getBaseContext()).getString("et_text_to_say_to_your_contact", "");
+		boolean coords = PreferenceManager.getDefaultSharedPreferences(
+				getBaseContext()).getBoolean("cb_send_coordinates", true);
 
 		if (coords) {
 
@@ -138,7 +140,9 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 		}
 
 		mAudioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
-		mAudioManager.setStreamVolume(AudioManager.STREAM_VOICE_CALL, mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0);
+		mAudioManager.setStreamVolume(
+				AudioManager.STREAM_VOICE_CALL, 
+				mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0);
 
 
 		for (int i = 0; i < 3; i++) {

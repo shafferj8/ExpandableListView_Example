@@ -69,15 +69,14 @@ public class ProtectMePreferences extends PreferenceActivity implements Preferen
 		shakePs = (PreferenceScreen)getPreferenceScreen().findPreference(
 		"shake_preference_screen");
 
-		// shakeCb.setOnPreferenceClickListener(this);
-		shakeCb.setEnabled(false);
-		shakeCb.setChecked(true);
+		shakeCb.setOnPreferenceClickListener(this);
 
 		int anglePref = getPreferenceManager().getSharedPreferences().getInt(Config.ANGLE_PREFERENCE, 90);
 
 		orientationPs.setSummary("Activation Angle : "+anglePref);
 
 		updateTriggerMethod();
+	
 	}
 
 	@Override

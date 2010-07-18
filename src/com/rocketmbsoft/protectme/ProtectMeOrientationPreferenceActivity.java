@@ -34,7 +34,7 @@ public class ProtectMeOrientationPreferenceActivity extends Activity implements 
 	Button set;
 	
 	int currentAngle = 55;
-	
+	private boolean mod;
 	
 	/** Called when the activity is first created. */
 	@Override
@@ -42,11 +42,16 @@ public class ProtectMeOrientationPreferenceActivity extends Activity implements 
 		super.onCreate(savedInstanceState);
 		
 		mOrientationListener = new OrientationEventListener(this) {
-			
+
 			@Override
 			public void onOrientationChanged(int orientation) {
-				y = (360 - orientation);
 				
+				if (orientation > 180) {
+					mod = true;
+				} else {
+					mod = false;
+				}
+				y = (360 - orientation);
 				demoview.invalidate();
 			}
 		};
@@ -182,6 +187,14 @@ public class ProtectMeOrientationPreferenceActivity extends Activity implements 
 			} else {
 				currentAngle = y;
 			}
+			
+			if (mod) {
+				currentAngle = 180 - currentAngle;
+			}
+			
+			currentAngle = Math.abs(currentAngle - 180);
+			
+			if (Config.D)Log.d(TAG, "Modification : "+mod); 
 			
 			paint.reset();
 			paint.setTextSize(20);

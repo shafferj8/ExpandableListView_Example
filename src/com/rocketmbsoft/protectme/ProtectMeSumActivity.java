@@ -2,6 +2,7 @@ package com.rocketmbsoft.protectme;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -28,14 +29,18 @@ public class ProtectMeSumActivity extends Activity {
 		((Button) findViewById(R.id.btn_about_id)).setOnClickListener(new OnClickListener() {
 			public void onClick(View v)
 			{
-				AlertDialog.Builder builder = new AlertDialog.Builder(ProtectMeSumActivity.this);
-		          builder.setTitle("Protect Me by\nRocket Mobile Soft");
-		          builder.setMessage("Version 2.1.1\nSupport at support@rocketmbsoft.com");
-		          builder.setNeutralButton("OK", null);
-		          builder.show(); 
+				showAboutDialog(ProtectMeSumActivity.this);
 			}
 		});
 
 	} 
+	
+	public static void showAboutDialog(Context c) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(c);
+        builder.setTitle(Config.ABOUT_DIALOG_TITLE);
+        builder.setMessage(Config.ABOUT_DIALOG_MESSAGE);
+        builder.setNeutralButton("OK", null);
+        builder.show();
+	}
 
 }
