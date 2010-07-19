@@ -173,7 +173,7 @@ TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 	private void callContact() {
 		HashMap<String, String> ttsParams = new HashMap<String, String>();
 		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
-				String.valueOf(AudioManager.STREAM_MUSIC));
+				String.valueOf(AudioManager.STREAM_VOICE_CALL));
 		ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
 		"I'm calling the police");
 

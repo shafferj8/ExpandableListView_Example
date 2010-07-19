@@ -46,14 +46,11 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 					tm.listen(mPhoneListener, PhoneStateListener.LISTEN_NONE);
 
 					try {
-						Thread.sleep(7000);
+						Thread.sleep(15000);
 					} catch (InterruptedException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					AudioManager am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-					
-					am.setSpeakerphoneOn(true);
 					
 					speakPhrase();
 				}
@@ -71,11 +68,14 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 			}
 		}
 	};
+	
 	private AudioManager mAudioManager;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
+		mAudioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
 		
 		try {
 			mTts = new TextToSpeech(this,
@@ -116,6 +116,8 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 		boolean coords = PreferenceManager.getDefaultSharedPreferences(
 				getBaseContext()).getBoolean("cb_send_coordinates", true);
 
+		// mAudioManager.setSpeakerphoneOn(true);
+		
 		if (coords) {
 
 			Location loc;
@@ -142,7 +144,6 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 			}
 		}
 
-		mAudioManager = ((AudioManager) getSystemService(Context.AUDIO_SERVICE));
 		mAudioManager.setStreamVolume(
 				AudioManager.STREAM_VOICE_CALL, 
 				mAudioManager.getStreamMaxVolume(AudioManager.STREAM_VOICE_CALL), 0);
@@ -150,8 +151,8 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 
 		for (int i = 0; i < 3; i++) {
 			HashMap<String, String> ttsParams = new HashMap<String, String>();
-			// ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
-			//		String.valueOf(AudioManager.STREAM_VOICE_CALL));
+			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+					String.valueOf(AudioManager.STREAM_VOICE_CALL));
 			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
 					TAG+i);
 			
@@ -188,6 +189,8 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 		
 		if (utteranceId.equals(TAG+2)) {
 			if (Config.D) Log.d(TAG, "onUtteranceCompleted got last utterance, shutting down");
+			
+			mAudioManager.setSpeakerphoneOn(true);
 			
 			mTts.shutdown();
 			mTts = null;
