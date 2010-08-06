@@ -10,64 +10,17 @@ import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.AudioManager;
+import android.os.Build;
 import android.os.IBinder;
+import android.os.Build.VERSION;
 import android.preference.PreferenceManager;
 import android.speech.tts.TextToSpeech;
-import android.telephony.PhoneStateListener;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener {
 
 	private TextToSpeech mTts;
 	private static final String TAG = "ProtectMeSpeakService";
-
-	private boolean offhook = false;
-	private boolean idle = false;
-
-	private TelephonyManager tm = null;
-
-	private PhoneStateListener mPhoneListener = new PhoneStateListener()
-	{
-		public void onCallStateChanged(int state, String incomingNumber)
-		{
-			switch (state)
-			{
-			case TelephonyManager.CALL_STATE_RINGING:
-				if (Config.D) Log.d(TAG, "CALL_STATE_RINGING : "+incomingNumber);
-				break;
-			case TelephonyManager.CALL_STATE_OFFHOOK:
-				if (Config.D) Log.d(TAG, "CALL_STATE_OFFHOOK : "+incomingNumber);
-				offhook = true;
-
-				if (offhook && idle) {
-					if (Config.D) Log.d(TAG, "Call In Progess ... ");
-					
-					tm.listen(mPhoneListener, PhoneStateListener.LISTEN_NONE);
-
-					try {
-						Thread.sleep(15000);
-					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-					speakPhrase();
-				}
-				break;
-			case TelephonyManager.CALL_STATE_IDLE:
-				if (Config.D) Log.d(TAG, "CALL_STATE_IDLE : "+incomingNumber);
-				idle = true;
-
-				if (offhook && idle) {
-					if (Config.D) Log.d(TAG, "Call Is Disconnected ...");
-				}
-				break;
-			default:
-				if (Config.D) Log.d(TAG, "Unknown phone state=" + state);
-			}
-		}
-	};
 	
 	private AudioManager mAudioManager;
 
@@ -86,8 +39,10 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 			e.printStackTrace();
 			return;
 		}
-
-		tm = (TelephonyManager)getSystemService(TELEPHONY_SERVICE);
+		
+		if (VERSION.SDK_INT > Build.VERSION_CODES.DONUT) {
+			mAudioManager.setParameters("noise_suppression=off");
+		}
 	}
 	
 
@@ -98,10 +53,10 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 		super.onDestroy();
 		if (Config.D) Log.d(TAG, "onDestroy");
 		
-		if (tm != null) {
-			tm.listen(mPhoneListener, PhoneStateListener.LISTEN_NONE);
+		if (VERSION.SDK_INT > Build.VERSION_CODES.DONUT) {
+			mAudioManager.setParameters("noise_suppression=on");
 		}
-
+		
 		if (mTts != null) {
 			mTts.shutdown();
 			mTts = null;
@@ -151,7 +106,7 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 
 		for (int i = 0; i < 3; i++) {
 			HashMap<String, String> ttsParams = new HashMap<String, String>();
-			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM,
+			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_STREAM, 
 					String.valueOf(AudioManager.STREAM_VOICE_CALL));
 			ttsParams.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID,
 					TAG+i);
@@ -171,7 +126,22 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 		
 		mTts.setOnUtteranceCompletedListener(this);
 		
-		tm.listen(mPhoneListener, PhoneStateListener.LISTEN_CALL_STATE);
+		Thread t = new Thread(new Runnable() {
+			public void run() {
+				
+				try {
+					Thread.sleep(15000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				speakPhrase();
+			}
+		});
+
+		t.start();
+
 	}
 
 	@Override
@@ -179,7 +149,6 @@ public class ProtectMeSpeakService extends Service implements  TextToSpeech.OnIn
 		// TODO Auto-generated method stub
 		return null;
 	}
-
 
 
 

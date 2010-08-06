@@ -33,17 +33,24 @@
 			android:summary="Secret word you will speak to let Protect Me service know you are OK."></EditTextPreference>
 
 	</PreferenceCategory>
+
+	<PreferenceCategory android:title="Seconds to Wait For Response">
+		<EditTextPreference android:dialogTitle="Seconds To Wait For Response (Integer)"
+			android:title="Seconds to Wait For Challenge Word (Integer)"
+			android:key="seconds_to_wait_for_response" android:defaultValue="20"
+			android:summary="Amount of seconds to wait for the challenge word, before calling the contact.">
+		</EditTextPreference>
+	</PreferenceCategory>
+
 	<PreferenceCategory android:title="Please Select Your Activation Method">
 		<CheckBoxPreference android:title="Orientation is Enabled"
 			android:key="shake_check_box"></CheckBoxPreference>
 		<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 			android:key="orientation_preference_screen" android:title="Orientation Preferences">
-			<!--  PreferenceCategory android:selectable="true"
-				android:key="orientation_preferences" android:title="Orientation Preferences">
+			<!-- PreferenceCategory android:selectable="true" android:key="orientation_preferences" 
+				android:title="Orientation Preferences"> </PreferenceCategory -->
 
-			</PreferenceCategory -->
-			
-			
+
 		</PreferenceScreen>
 		<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
 			android:title="Shake Preferences" android:key="shake_preference_screen">
@@ -63,11 +70,6 @@
 					android:defaultValue="Four Seconds">
 
 				</ListPreference>
-				<EditTextPreference android:dialogTitle="Seconds To Wait For Response (Integer)"
-					android:title="Seconds to Wait For Challenge Word (Integer)"
-					android:key="seconds_to_wait_for_response" android:defaultValue="20"
-					android:summary="Amount of seconds to wait for the challenge word, before calling the contact.">
-				</EditTextPreference>
 
 				<com.rocketmbsoft.protectme.ProtectMeSlderPreference
 					android:key="int_sensitivity" android:defaultValue="50"
