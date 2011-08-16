@@ -1,4 +1,4 @@
-package com.rocketmbsoft.protectme;
+package com.rocketmbsoft.protectme.advanced;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -58,7 +58,7 @@ public class Rater {
 						
 						goToMarket = new Intent(
 								Intent.ACTION_VIEW,
-								Uri.parse("market://details?id=com.rocketmbsoft.protectme"));
+								Uri.parse("market://details?id=com.rocketmbsoft.protectme.advanced"));
 						
 						Rater.this.context.startActivity(goToMarket);
 					} catch (Exception e) {

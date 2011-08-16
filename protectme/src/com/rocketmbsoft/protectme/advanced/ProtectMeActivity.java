@@ -1,4 +1,4 @@
-package com.rocketmbsoft.protectme;
+package com.rocketmbsoft.protectme.advanced;
 
 
 
@@ -54,7 +54,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 
 		prefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		
-		Rater r = new Rater(this, prefs, "ProtectMe", "com.rocketmbsoft.protectme");
+		Rater r = new Rater(this, prefs, "ProtectMe Advanced", "com.rocketmbsoft.protectme.advanced");
 		
 		r.run();
 

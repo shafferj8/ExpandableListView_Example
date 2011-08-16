@@ -1,6 +1,6 @@
 
 
-package com.rocketmbsoft.protectme;
+package com.rocketmbsoft.protectme.advanced;
 
 import android.app.Activity;
 import android.content.Intent;

@@ -3,7 +3,7 @@
     <string name="coming_soon">Coming Soon!!!</string>
     <string name="btn_main_preferences_text">Set Up</string>
     
-    <string name="app_name">Protect Me</string>
+    <string name="app_name">Protect Me Advanced</string>
 <string name="btn_start_main_zones">Watch Over Me Based On Pre-Set Zones (Only Activated when you Enter a Zone)</string>
 <string name="btn_start_main_continuos">Watch Over Me Continuosly (Always On Regardless of Pre-Set Zones)</string>
 <string name="btn_stop_services">Stop Protect Me</string>

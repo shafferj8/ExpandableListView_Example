@@ -6,11 +6,11 @@
 
 	<PreferenceCategory android:title="Choose an Action">
 
-		<com.rocketmbsoft.protectme.ActionSelectorPreference
+		<com.rocketmbsoft.protectme.advanced.ActionSelectorPreference
 			android:key="action_preference" android:defaultValue="50"
 			android:title="Please Select the Action you want performed" />
 
-		<com.rocketmbsoft.protectme.ProtectMeContactPreference
+		<com.rocketmbsoft.protectme.advanced.ProtectMeContactPreference
 			android:title="Choose Person to Call" android:key="str_phone_contact" />
 
 		<Preference android:title="Chose People to SMS"
@@ -34,7 +34,7 @@
 
 	<PreferenceCategory android:title="Settings For Challenge Word">
 
-		<com.rocketmbsoft.protectme.EnableChalengePreference
+		<com.rocketmbsoft.protectme.advanced.EnableChalengePreference
 			android:key="challenge_word_enabled" android:title="Check the box if you want ProtectMe to ask you the challenge word" />
 
 		<EditTextPreference android:dialogTitle="Challenge Word"
@@ -84,7 +84,7 @@
 
 			</ListPreference>
 
-			<com.rocketmbsoft.protectme.ProtectMeSlderPreference
+			<com.rocketmbsoft.protectme.advanced.ProtectMeSlderPreference
 				android:key="int_sensitivity" android:defaultValue="50"
 				android:title="Sensitivity" />
 

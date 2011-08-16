@@ -1,11 +1,11 @@
-package com.rocketmbsoft.protectme;
+package com.rocketmbsoft.protectme.advanced;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
 
-import com.rocketmbsoft.protectme.ContactRow.ContactSubRow;
+import com.rocketmbsoft.protectme.advanced.ContactRow.ContactSubRow;
 
 import android.app.ExpandableListActivity;
 import android.content.ContentResolver;

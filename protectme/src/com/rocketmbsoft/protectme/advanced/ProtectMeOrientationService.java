@@ -1,9 +1,9 @@
 
 
-package com.rocketmbsoft.protectme;
+package com.rocketmbsoft.protectme.advanced;
 
 
-import com.rocketmbsoft.protectme.R;
+import com.rocketmbsoft.protectme.advanced.R;
 
 import android.app.Notification;
 import android.app.NotificationManager;

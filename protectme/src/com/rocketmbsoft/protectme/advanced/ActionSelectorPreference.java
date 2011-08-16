@@ -1,4 +1,4 @@
-package com.rocketmbsoft.protectme;
+package com.rocketmbsoft.protectme.advanced;
 
 import android.content.Context;
 import android.content.SharedPreferences.Editor;
