@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:orientation="vertical"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+>
+
+
+<LinearLayout android:id="@+id/LinearLayout01" android:layout_height="wrap_content" android:layout_width="fill_parent"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/btn_about" android:id="@+id/btn_about_id" android:maxWidth="150px" android:width="150px"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/btn_dismiss" android:id="@+id/btn_dismiss_id" android:width="150px"></Button>
+</LinearLayout><LinearLayout android:id="@+id/LinearLayout02" android:layout_height="fill_parent" android:layout_width="fill_parent"><WebView
+android:id="@+id/helloWebView"
+android:layout_width="fill_parent"
+android:layout_height="fill_parent"
+/></LinearLayout>
+</LinearLayout> 
