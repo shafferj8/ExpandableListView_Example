@@ -91,7 +91,7 @@ public class ProtectMeActivity extends Activity implements OnClickListener {
 			public void onClick(View v)
 			{
 
-				if (prefs.getBoolean(Config.PREF_B_SHAKE_ENABLED, true)) {
+				if (prefs.getString(Config.PREF_S_ACTIVATION_METHOD, "orientation").equals("shaking")) {
 					startService(new Intent(ProtectMeActivity.this,
 							ProtectMeShakeService.class));
 				} else {

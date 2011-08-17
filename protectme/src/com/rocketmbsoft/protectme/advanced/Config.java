@@ -12,7 +12,6 @@ public class Config {
 	public static final String PREF_B_SEND_COORDINATES = "cb_send_coordinates";
 	public static final String PREF_STR_CHALLENGE_PHRASE = "et_challenge_phrase";
 	public static final String PREF_I_SECONDS_TO_WAIT_FOR_RESPONSE = "seconds_to_wait_for_response";
-	public static final String PREF_B_SHAKE_ENABLED = "shake_check_box";
 	public static final String PREF_I_FORCE_THRESHOLD = "et_force_threshold";
 	public static final String PREF_STR_SECONDS_OF_SHAKING = "seconds_of_shake";
 	public static final String PREF_I_SENSITIVITY = "int_sensitivity";

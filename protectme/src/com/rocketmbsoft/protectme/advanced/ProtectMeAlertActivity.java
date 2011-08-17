@@ -289,7 +289,7 @@ TextToSpeech.OnInitListener, TextToSpeech.OnUtteranceCompletedListener, Location
 					// false alarm
 					resetVolume();
 
-					if (prefs.getBoolean(Config.PREF_B_SHAKE_ENABLED, true)) {
+					if (prefs.getString(Config.PREF_S_ACTIVATION_METHOD, "orientation").equals("shaking")) {
 						startService(new Intent(this,
 								ProtectMeShakeService.class));
 					} else {

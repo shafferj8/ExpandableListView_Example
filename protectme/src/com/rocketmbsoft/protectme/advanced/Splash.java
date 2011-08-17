@@ -14,9 +14,7 @@ public class Splash extends Activity {
 	
 	//handler for splash screen
 	private Handler splashHandler = new Handler() {
-		/* (non-Javadoc)
-		 * @see android.os.Handler#handleMessage(android.os.Message)
-		 */
+
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
