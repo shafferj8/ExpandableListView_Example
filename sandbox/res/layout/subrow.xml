@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"> -->
+    
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    
+    <TextView android:text="TextView" 
+    android:id="@+id/contact_type" 
+    android:paddingLeft="20px" 
+    android:layout_width="90px" 
+    android:layout_height="wrap_content"
+    android:focusable="false"></TextView>
+    
+    <CheckedTextView 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:listSelector="@android:color/transparent"
+        android:background="@android:color/transparent"  
+        android:checkMark="?android:attr/listChoiceIndicatorMultiple" 
+        android:text="@string/hello" 
+        android:textColor="#FFFFFF" 
+        android:paddingLeft="10px" 
+        android:id="@+id/contact_number"
+        android:focusable="false"/>
+        
+<!-- </LinearLayout> -->
+</LinearLayout>
